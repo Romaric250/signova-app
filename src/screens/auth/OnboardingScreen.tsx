@@ -28,31 +28,6 @@ const EyeIcon: React.FC<{ size?: number }> = ({ size = 120 }) => {
   );
 };
 
-// Book with Flame Icon Component
-const BookFlameIcon: React.FC<{ size?: number }> = ({ size = 120 }) => {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 120 120" fill="none">
-      {/* Flame */}
-      <Path
-        d="M50 30C50 30 45 40 45 50C45 55 47 58 50 60C53 58 55 55 55 50C55 40 50 30 50 30Z"
-        stroke="#1a241e"
-        strokeWidth="2"
-        fill="none"
-      />
-      {/* Book */}
-      <Path
-        d="M30 40L30 90L60 85L90 90L90 40L60 35L30 40Z"
-        stroke="#1a241e"
-        strokeWidth="2"
-        fill="none"
-      />
-      <Path d="M60 35L60 85" stroke="#1a241e" strokeWidth="2" />
-      <Path d="M45 50L45 75" stroke="#1a241e" strokeWidth="1.5" />
-      <Path d="M75 50L75 75" stroke="#1a241e" strokeWidth="1.5" />
-    </Svg>
-  );
-};
-
 // Microphone Icon Component
 const MicrophoneIcon: React.FC<{ size?: number }> = ({ size = 200 }) => {
   return (
@@ -110,30 +85,22 @@ export const OnboardingScreen: React.FC = () => {
       title: 'Translate speech and text',
       subtitle: 'into sign language instantly',
     },
-    {
-      type: 'book',
-      title: 'Build real skills with',
-      subtitle: 'lessons, quizzes, and practice.',
-      topBgColor: '#e8e9e0',
-    },
   ];
 
   const handleNext = async () => {
     if (currentPage < pages.length - 1) {
       setCurrentPage(currentPage + 1);
     } else {
-      // Mark onboarding as completed
+      // Last onboarding screen - navigate to Signup after completing all 3 screens
       const { setOnboardingCompleted } = await import('@/services/storage/localStorage');
       await setOnboardingCompleted(true);
-      navigation.navigate('Login');
+      navigation.navigate('Signup');
     }
   };
 
-  const handleGetStarted = async () => {
-    // Mark onboarding as completed
-    const { setOnboardingCompleted } = await import('@/services/storage/localStorage');
-    await setOnboardingCompleted(true);
-    navigation.navigate('Signup');
+  const handleGetStarted = () => {
+    // Navigate to next onboarding screen (page 1) to go through all 3 screens
+    setCurrentPage(1);
   };
 
   const handleLogin = async () => {
@@ -253,45 +220,6 @@ export const OnboardingScreen: React.FC = () => {
             {renderPageIndicator()}
           </View>
         </View>
-      );
-    }
-
-    if (page.type === 'book') {
-      return (
-        <>
-          <View
-            style={{
-              height: height * 0.4,
-              backgroundColor: page.topBgColor,
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <BookFlameIcon size={120} />
-          </View>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: '#1a241e',
-              paddingHorizontal: 24,
-              paddingTop: 40,
-            }}
-          >
-            <Text
-              className="text-white text-center mb-2"
-              style={{ fontSize: 22, fontWeight: '700', lineHeight: 30 }}
-            >
-              {page.title}
-            </Text>
-            <Text
-              className="text-white text-center"
-              style={{ fontSize: 22, fontWeight: '700', lineHeight: 30 }}
-            >
-              {page.subtitle}
-            </Text>
-            {renderPageIndicator()}
-          </View>
-        </>
       );
     }
 

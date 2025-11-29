@@ -4,10 +4,8 @@ export default {
     slug: 'signova-app',
     version: '1.0.0',
     orientation: 'portrait',
-    icon: './assets/icon.png',
     userInterfaceStyle: 'light',
     splash: {
-      image: './assets/splash.png',
       resizeMode: 'contain',
       backgroundColor: '#38E078',
     },
@@ -18,13 +16,9 @@ export default {
     },
     android: {
       adaptiveIcon: {
-        foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#38E078',
       },
       package: 'com.signnova.app',
-    },
-    web: {
-      favicon: './assets/favicon.png',
     },
     plugins: [
       [

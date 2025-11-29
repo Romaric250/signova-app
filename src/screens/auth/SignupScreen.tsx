@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native';
+import { View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/atoms/Button';
 import { FormInput } from '@/components/molecules/FormInput';
 import { Text } from '@/components/atoms/Text';
-import { Icon } from '@/components/atoms/Icon';
 import { useAuth } from '@/hooks/useAuth';
 import { AuthStackParamList } from '@/types/navigation.types';
 import { SignupData } from '@/types/auth.types';
@@ -31,34 +30,22 @@ export const SignupScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1" style={{ backgroundColor: '#1a241e' }}>
+    <SafeAreaView className="flex-1 bg-white">
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1"
       >
-        {/* Header */}
-        <View className="flex-row items-center justify-between px-4 py-3">
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            className="p-2"
-            activeOpacity={0.7}
-          >
-            <Icon name="arrow-back" size={24} color="#FFFFFF" />
-          </TouchableOpacity>
-          <Text variant="h4" className="text-white font-semibold">
-            SignNova
-          </Text>
-          <View style={{ width: 40 }} />
-        </View>
-
         <ScrollView
           className="flex-1"
-          contentContainerClassName="flex-grow px-6 py-6"
+          contentContainerClassName="flex-grow px-6 py-8"
           keyboardShouldPersistTaps="handled"
         >
           <View className="mb-8">
-            <Text variant="h1" className="text-white mb-2" style={{ fontSize: 32, fontWeight: '700' }}>
+            <Text variant="h1" className="text-gray-900 mb-2">
               Create Account
+            </Text>
+            <Text variant="body" className="text-gray-600">
+              Join SignNova and start learning
             </Text>
           </View>
 
@@ -66,10 +53,8 @@ export const SignupScreen: React.FC = () => {
             <FormInput
               name="name"
               control={control}
-              label=""
-              placeholder="Name"
-              variant="dark"
-              className="mb-4"
+              label="Full Name"
+              placeholder="Enter your full name"
               rules={{
                 required: 'Name is required',
                 minLength: {
@@ -79,54 +64,52 @@ export const SignupScreen: React.FC = () => {
               }}
             />
 
-            <FormInput
-              name="email"
-              control={control}
-              label=""
-              placeholder="Email"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              variant="dark"
-              className="mb-4"
-              rules={{
-                required: 'Email is required',
-                validate: (value) => validateEmail(value) || 'Invalid email format',
-              }}
-            />
+            <View className="mt-4">
+              <FormInput
+                name="email"
+                control={control}
+                label="Email"
+                placeholder="Enter your email"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                rules={{
+                  required: 'Email is required',
+                  validate: (value) => validateEmail(value) || 'Invalid email format',
+                }}
+              />
+            </View>
 
-            <FormInput
-              name="password"
-              control={control}
-              label=""
-              placeholder="Password"
-              secureTextEntry
-              variant="dark"
-              className="mb-4"
-              rules={{
-                required: 'Password is required',
-                minLength: {
-                  value: 8,
-                  message: 'Password must be at least 8 characters',
-                },
-              }}
-            />
+            <View className="mt-4">
+              <FormInput
+                name="password"
+                control={control}
+                label="Password"
+                placeholder="Create a password"
+                secureTextEntry
+                rules={{
+                  required: 'Password is required',
+                  minLength: {
+                    value: 8,
+                    message: 'Password must be at least 8 characters',
+                  },
+                }}
+              />
+            </View>
 
-            <FormInput
-              name="confirmPassword"
-              control={control}
-              label=""
-              placeholder="Select"
-              variant="dark"
-              rightIcon={
-                <Icon name="chevron-up" size={20} color="#FFFFFF" />
-              }
-              className="mb-4"
-              rules={{
-                required: 'Please confirm your password',
-                validate: (value) =>
-                  value === password || 'Passwords do not match',
-              }}
-            />
+            <View className="mt-4">
+              <FormInput
+                name="confirmPassword"
+                control={control}
+                label="Confirm Password"
+                placeholder="Confirm your password"
+                secureTextEntry
+                rules={{
+                  required: 'Please confirm your password',
+                  validate: (value) =>
+                    value === password || 'Passwords do not match',
+                }}
+              />
+            </View>
           </View>
 
           <Button
@@ -134,23 +117,20 @@ export const SignupScreen: React.FC = () => {
             onPress={handleSubmit(handleSignup)}
             variant="primary"
             loading={isLoading}
+            className="mb-4"
             fullWidth
-            size="large"
-            className="mb-6"
           />
 
-          <View className="items-center">
-            <Text variant="body" className="text-white mb-2">
-              Already have an account?
+          <View className="flex-row justify-center items-center">
+            <Text variant="body" className="text-gray-600">
+              Already have an account?{' '}
             </Text>
-            <TouchableOpacity
+            <Button
+              title="Sign In"
               onPress={() => navigation.navigate('Login')}
-              activeOpacity={0.7}
-            >
-              <Text variant="body" className="text-white font-semibold">
-                Log In
-              </Text>
-            </TouchableOpacity>
+              variant="ghost"
+              className="p-0"
+            />
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

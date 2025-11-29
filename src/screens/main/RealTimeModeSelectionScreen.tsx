@@ -38,6 +38,13 @@ const workflowOptions: WorkflowOption[] = [
     icon: 'closed-captioning-outline',
     route: 'LiveCaptions',
   },
+  {
+    id: 'sign-to-text',
+    title: 'Record Sign → Text/Sign',
+    description: 'Record sign language and convert to text or sign animations.',
+    icon: 'videocam',
+    route: 'SignRecording',
+  },
 ];
 
 export const RealTimeModeSelectionScreen: React.FC = () => {

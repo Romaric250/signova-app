@@ -13,6 +13,7 @@ export type TranslateStackParamList = {
   RealTimeModeSelection: undefined;
   TextToSign: undefined;
   LiveCaptions: undefined;
+  SignRecording: undefined;
 };
 
 export type MainTabParamList = {

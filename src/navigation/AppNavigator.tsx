@@ -8,6 +8,7 @@ import { TranslateNavigator } from './TranslateNavigator';
 import { RealTimeModeSelectionScreen } from '@/screens/main/RealTimeModeSelectionScreen';
 import { TranslateScreen } from '@/screens/main/TranslateScreen';
 import { LiveCaptionsScreen } from '@/screens/main/LiveCaptionsScreen';
+import { SignRecordingScreen } from '@/screens/main/SignRecordingScreen';
 import { useAuthStore } from '@/store/authStore';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -29,6 +30,7 @@ export const AppNavigator: React.FC = () => {
             />
             <Stack.Screen name="TextToSign" component={TranslateScreen} />
             <Stack.Screen name="LiveCaptions" component={LiveCaptionsScreen} />
+            <Stack.Screen name="SignRecording" component={SignRecordingScreen} />
           </>
         )}
       </Stack.Navigator>

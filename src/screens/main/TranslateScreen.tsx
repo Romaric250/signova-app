@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, ScrollView, TextInput, TouchableOpacity, Image } from 'react-native';
+import { View, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -12,18 +12,12 @@ type NavigationProp = NativeStackNavigationProp<any>;
 
 export const TranslateScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
-  const [text, setText] = useState('The quick brown fox jumps over the lazy dog');
+  const [text, setText] = useState('');
   const [speed, setSpeed] = useState(1); // 0.5x to 2x
-  const [voice, setVoice] = useState('Neutral');
 
-  const handleRecord = () => {
-    // TODO: Implement recording
-    console.log('Record pressed');
-  };
-
-  const handleSave = () => {
-    // TODO: Implement save functionality
-    console.log('Save pressed');
+  const handleTranslate = () => {
+    // TODO: Implement translation
+    console.log('Translate pressed');
   };
 
   const getSpeedLabel = () => {
@@ -48,45 +42,50 @@ export const TranslateScreen: React.FC = () => {
 
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="px-4 pb-20">
-          {/* 3D Avatar Video Player */}
-          <View className="bg-[#87CEEB] rounded-lg overflow-hidden mb-4" style={{ aspectRatio: 16 / 9 }}>
-            <View className="w-full h-full items-center justify-center relative">
-              {/* Placeholder for 3D avatar */}
-              <View className="w-32 h-32 bg-white rounded-full items-center justify-center">
-                <View className="w-24 h-24 bg-gray-200 rounded-full" />
-              </View>
-              {/* Play button overlay */}
-              <TouchableOpacity
-                className="absolute inset-0 items-center justify-center bg-black/20"
-                activeOpacity={0.8}
-              >
-                <View className="bg-white/80 rounded-full w-16 h-16 items-center justify-center">
-                  <Icon name="play" size={32} color="#1a241e" />
-                </View>
-              </TouchableOpacity>
+          {/* Text Input Area */}
+          <View className="bg-[#1a241e] rounded-lg mb-6 relative" style={{ minHeight: 200 }}>
+            <TextInput
+              value={text}
+              onChangeText={setText}
+              placeholder="Enter text to translate..."
+              placeholderTextColor="#9CA3AF"
+              multiline
+              className="text-white text-base p-4 min-h-[200px]"
+              style={{ textAlignVertical: 'top' }}
+            />
+            <View className="absolute bottom-4 right-4">
+              <Button
+                title="Translate"
+                onPress={handleTranslate}
+                variant="primary"
+                size="medium"
+              />
             </View>
           </View>
 
-          {/* Text Display */}
+          {/* Signing Output Section */}
           <View className="mb-6">
-            <Text variant="body" className="text-white">
-              {text}
+            <Text variant="h4" className="text-white font-bold mb-4">
+              Signing Output
             </Text>
-          </View>
-
-          {/* Audio Control */}
-          <View className="flex-row items-center mb-6">
-            <Icon name="volume-high" size={24} color="#FFFFFF" />
-            <Text variant="body" className="text-white ml-3">
-              {voice}
-            </Text>
+            <View className="bg-white rounded-lg overflow-hidden" style={{ aspectRatio: 16 / 9 }}>
+              <View className="w-full h-full items-center justify-center">
+                {/* Placeholder for 3D avatar */}
+                <View className="w-32 h-32 bg-gray-100 rounded-full items-center justify-center">
+                  <Icon name="person" size={64} color="#9CA3AF" />
+                </View>
+              </View>
+            </View>
           </View>
 
           {/* Speed Control */}
           <View className="mb-8">
+            <Text variant="h4" className="text-white font-bold mb-4">
+              Speed
+            </Text>
             <View className="flex-row items-center justify-between mb-3">
               <Text variant="body" className="text-white">
-                Speed
+                Adjust signing speed
               </Text>
               <Text variant="body" className="text-white font-semibold">
                 {getSpeedLabel()}
@@ -101,22 +100,6 @@ export const TranslateScreen: React.FC = () => {
               minimumValue={0}
               maximumValue={100}
               step={33.33} // Approximate steps for 0.5x, 1x, 1.5x, 2x
-            />
-          </View>
-
-          {/* Action Buttons */}
-          <View className="flex-row space-x-3">
-            <Button
-              title="Record"
-              onPress={handleRecord}
-              variant="primary"
-              className="flex-1"
-            />
-            <Button
-              title="Save"
-              onPress={handleSave}
-              variant="outline"
-              className="flex-1"
             />
           </View>
         </View>

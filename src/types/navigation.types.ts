@@ -17,7 +17,6 @@ export type MainTabParamList = {
   Home: undefined;
   Dictionary: undefined;
   Learning: undefined;
-  Translate: NavigatorScreenParams<TranslateStackParamList>;
   Profile: undefined;
 };
 
@@ -44,7 +43,7 @@ export type SettingsStackParamList = {
 export type RootStackParamList = {
   Auth: NavigatorScreenParams<AuthStackParamList>;
   Main: NavigatorScreenParams<MainTabParamList>;
-};
+} & TranslateStackParamList;
 
 declare global {
   namespace ReactNavigation {

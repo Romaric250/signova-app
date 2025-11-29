@@ -11,7 +11,7 @@ export const HomeScreen: React.FC = () => {
   const navigation = useNavigation();
 
   const handleRealTimePress = () => {
-    navigation.navigate('Translate' as never, { screen: 'RealTimeModeSelection' } as never);
+    navigation.navigate('RealTimeModeSelection' as never);
   };
 
   const handleLearnPress = () => {

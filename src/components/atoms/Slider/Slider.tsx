@@ -64,9 +64,9 @@ export const Slider: React.FC<SliderProps> = ({
         onPress={handlePress}
         className="relative"
       >
-        <View className="h-1 bg-gray-600 rounded-full">
+        <View className="h-1 bg-[#2a3a2e] rounded-full">
           <View
-            className="h-full bg-white rounded-full"
+            className="h-full bg-[#38E078] rounded-full"
             style={{ width: `${percentage}%` }}
           />
         </View>

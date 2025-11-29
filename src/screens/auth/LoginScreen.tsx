@@ -7,24 +7,23 @@ import { useForm } from 'react-hook-form';
 import { Button } from '@/components/atoms/Button';
 import { FormInput } from '@/components/molecules/FormInput';
 import { Text } from '@/components/atoms/Text';
-import { useAuth } from '@/hooks/useAuth';
 import { AuthStackParamList } from '@/types/navigation.types';
 import { LoginCredentials } from '@/types/auth.types';
 import { validateEmail } from '@/utils/validation';
+import { useAuthStore } from '@/store/authStore';
+import { mockUser } from '@/utils/mockData';
 
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList>;
 
 export const LoginScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
-  const { login, isLoading } = useAuth();
-  const { control, handleSubmit, formState: { errors } } = useForm<LoginCredentials>();
+  const { control } = useForm<LoginCredentials>();
+  const login = useAuthStore((state) => state.login);
 
-  const handleLogin = async (data: LoginCredentials) => {
-    const result = await login(data);
-    if (!result.success) {
-      // TODO: Show error toast
-      console.error('Login error:', result.error);
-    }
+  const handleLogin = async () => {
+    // Bypass authentication for development - directly login with mock user
+    await login(mockUser, 'mock-token');
+    // Navigation will happen automatically via AppNavigator when isAuthenticated becomes true
   };
 
   return (
@@ -88,9 +87,8 @@ export const LoginScreen: React.FC = () => {
 
           <Button
             title="Sign In"
-            onPress={handleSubmit(handleLogin)}
+            onPress={handleLogin}
             variant="primary"
-            loading={isLoading}
             className="mb-4"
           />
 

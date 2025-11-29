@@ -29,7 +29,13 @@ export const useAuthStore = create<AuthStore>((set) => ({
   },
 
   login: async (user, token) => {
-    await setAuthToken(token);
+    // Skip SecureStore for development/web - just set state directly
+    try {
+      await setAuthToken(token);
+    } catch (error) {
+      // Ignore SecureStore errors on web/development
+      console.log('SecureStore not available, using in-memory storage');
+    }
     set({
       user,
       token,

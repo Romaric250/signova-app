@@ -28,38 +28,28 @@ const EyeIcon: React.FC<{ size?: number }> = ({ size = 120 }) => {
   );
 };
 
-// Microphone Icon Component
-const MicrophoneIcon: React.FC<{ size?: number }> = ({ size = 200 }) => {
+// Book with Flame Icon Component
+const BookFlameIcon: React.FC<{ size?: number }> = ({ size = 120 }) => {
   return (
-    <View style={{ alignItems: 'center', justifyContent: 'center' }}>
-      <View
-        style={{
-          width: size * 0.6,
-          height: size * 0.8,
-          backgroundColor: '#E5E7EB',
-          borderRadius: size * 0.3,
-          borderWidth: 2,
-          borderColor: '#9CA3AF',
-        }}
+    <Svg width={size} height={size} viewBox="0 0 120 120" fill="none">
+      {/* Flame */}
+      <Path
+        d="M50 30C50 30 45 40 45 50C45 55 47 58 50 60C53 58 55 55 55 50C55 40 50 30 50 30Z"
+        stroke="#1a241e"
+        strokeWidth="2"
+        fill="none"
       />
-      <View
-        style={{
-          width: size * 0.15,
-          height: size * 0.4,
-          backgroundColor: '#374151',
-          marginTop: -size * 0.2,
-        }}
+      {/* Book */}
+      <Path
+        d="M30 40L30 90L60 85L90 90L90 40L60 35L30 40Z"
+        stroke="#1a241e"
+        strokeWidth="2"
+        fill="none"
       />
-      <View
-        style={{
-          width: size * 0.4,
-          height: size * 0.1,
-          backgroundColor: '#374151',
-          marginTop: -size * 0.05,
-          borderRadius: size * 0.05,
-        }}
-      />
-    </View>
+      <Path d="M60 35L60 85" stroke="#1a241e" strokeWidth="2" />
+      <Path d="M45 50L45 75" stroke="#1a241e" strokeWidth="1.5" />
+      <Path d="M75 50L75 75" stroke="#1a241e" strokeWidth="1.5" />
+    </Svg>
   );
 };
 
@@ -81,9 +71,10 @@ export const OnboardingScreen: React.FC = () => {
       topBgColor: '#e8e9e0',
     },
     {
-      type: 'microphone',
-      title: 'Translate speech and text',
-      subtitle: 'into sign language instantly',
+      type: 'book',
+      title: 'Build real skills with',
+      subtitle: 'lessons, quizzes, and practice.',
+      topBgColor: '#e8e9e0',
     },
   ];
 
@@ -194,32 +185,42 @@ export const OnboardingScreen: React.FC = () => {
       );
     }
 
-    if (page.type === 'microphone') {
+    if (page.type === 'book') {
       return (
-        <View className="flex-1 px-6">
-          <View className="flex-1 items-center justify-center">
-            <View
-              style={{
-                width: width * 0.7,
-                height: height * 0.35,
-                backgroundColor: '#4FD1C7',
-                borderRadius: 20,
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: 40,
-              }}
-            >
-              <MicrophoneIcon size={180} />
-            </View>
+        <>
+          <View
+            style={{
+              height: height * 0.4,
+              backgroundColor: page.topBgColor,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <BookFlameIcon size={120} />
+          </View>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: '#1a241e',
+              paddingHorizontal: 24,
+              paddingTop: 40,
+            }}
+          >
             <Text
-              className="text-white text-center mb-8"
-              style={{ fontSize: 22, fontWeight: '600', lineHeight: 30, paddingHorizontal: 20 }}
+              className="text-white text-center mb-2"
+              style={{ fontSize: 22, fontWeight: '700', lineHeight: 30 }}
             >
-              {page.title} {page.subtitle}
+              {page.title}
+            </Text>
+            <Text
+              className="text-white text-center"
+              style={{ fontSize: 22, fontWeight: '700', lineHeight: 30 }}
+            >
+              {page.subtitle}
             </Text>
             {renderPageIndicator()}
           </View>
-        </View>
+        </>
       );
     }
 

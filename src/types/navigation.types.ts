@@ -5,6 +5,8 @@ export type AuthStackParamList = {
   Login: undefined;
   Signup: undefined;
   ForgotPassword: undefined;
+  SignLanguageSelection: undefined;
+  Permissions: undefined;
 };
 
 export type TranslateStackParamList = {

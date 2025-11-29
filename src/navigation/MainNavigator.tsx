@@ -21,8 +21,8 @@ export const MainNavigator: React.FC = () => {
           borderTopWidth: 0,
           elevation: 0,
           height: 60,
-          paddingBottom: 8,
-          paddingTop: 8,
+          paddingBottom: 12,
+          paddingTop: 12,
         },
         tabBarLabelStyle: {
           fontSize: 12,
@@ -37,7 +37,7 @@ export const MainNavigator: React.FC = () => {
           tabBarIcon: ({ color, size, focused }) => (
             <Icon name={focused ? 'home' : 'home-outline'} size={size} color={color} />
           ),
-          tabBarLabel: 'Home',
+          tabBarShowLabel: false,
         }}
       />
       <Tab.Screen
@@ -47,7 +47,7 @@ export const MainNavigator: React.FC = () => {
           tabBarIcon: ({ color, size, focused }) => (
             <Icon name={focused ? 'book' : 'book-outline'} size={size} color={color} />
           ),
-          tabBarLabel: 'Learn',
+          tabBarShowLabel: false,
         }}
       />
       <Tab.Screen
@@ -57,7 +57,7 @@ export const MainNavigator: React.FC = () => {
           tabBarIcon: ({ color, size, focused }) => (
             <Icon name={focused ? 'search' : 'search-outline'} size={size} color={color} />
           ),
-          tabBarLabel: 'Dictionary',
+          tabBarShowLabel: false,
         }}
       />
       <Tab.Screen
@@ -67,7 +67,7 @@ export const MainNavigator: React.FC = () => {
           tabBarIcon: ({ color, size, focused }) => (
             <Icon name={focused ? 'settings' : 'settings-outline'} size={size} color={color} />
           ),
-          tabBarLabel: 'Settings',
+          tabBarShowLabel: false,
         }}
       />
     </Tab.Navigator>

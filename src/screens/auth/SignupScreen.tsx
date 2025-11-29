@@ -23,10 +23,17 @@ export const SignupScreen: React.FC = () => {
 
   const handleSignup = async (data: SignupData) => {
     const result = await signup(data);
-    if (!result.success) {
+    if (result.success) {
+      navigation.navigate('SignLanguageSelection');
+    } else {
       // TODO: Show error toast
       console.error('Signup error:', result.error);
     }
+  };
+
+  const handleBypass = () => {
+    // Bypass authentication for development - directly navigate to sign language selection
+    navigation.navigate('SignLanguageSelection');
   };
 
   return (
@@ -114,7 +121,7 @@ export const SignupScreen: React.FC = () => {
 
           <Button
             title="Sign Up"
-            onPress={handleSubmit(handleSignup)}
+            onPress={handleBypass}
             variant="primary"
             loading={isLoading}
             className="mb-4"

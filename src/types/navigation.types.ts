@@ -7,11 +7,17 @@ export type AuthStackParamList = {
   ForgotPassword: undefined;
 };
 
+export type TranslateStackParamList = {
+  RealTimeModeSelection: undefined;
+  TextToSign: undefined;
+  LiveCaptions: undefined;
+};
+
 export type MainTabParamList = {
   Home: undefined;
   Dictionary: undefined;
   Learning: undefined;
-  Translate: undefined;
+  Translate: NavigatorScreenParams<TranslateStackParamList>;
   Profile: undefined;
 };
 

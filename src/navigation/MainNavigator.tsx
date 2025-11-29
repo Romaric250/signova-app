@@ -4,7 +4,7 @@ import { MainTabParamList } from './types';
 import { HomeScreen } from '@/screens/main/HomeScreen';
 import { DictionaryScreen } from '@/screens/main/DictionaryScreen';
 import { LearningScreen } from '@/screens/main/LearningScreen';
-import { TranslateScreen } from '@/screens/main/TranslateScreen';
+import { TranslateNavigator } from './TranslateNavigator';
 import { ProfileScreen } from '@/screens/main/ProfileScreen';
 import { Icon } from '@/components/atoms/Icon';
 
@@ -59,6 +59,16 @@ export const MainNavigator: React.FC = () => {
             <Icon name={focused ? 'search' : 'search-outline'} size={size} color={color} />
           ),
           tabBarLabel: 'Dictionary',
+        }}
+      />
+      <Tab.Screen
+        name="Translate"
+        component={TranslateNavigator}
+        options={{
+          tabBarIcon: ({ color, size, focused }) => (
+            <Icon name={focused ? 'language' : 'language-outline'} size={size} color={color} />
+          ),
+          tabBarLabel: 'Translate',
         }}
       />
       <Tab.Screen

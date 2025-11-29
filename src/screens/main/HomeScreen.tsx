@@ -11,8 +11,7 @@ export const HomeScreen: React.FC = () => {
   const navigation = useNavigation();
 
   const handleRealTimePress = () => {
-    // TODO: Navigate to real-time translation screen
-    console.log('Real-Time Mode pressed');
+    navigation.navigate('Translate' as never, { screen: 'RealTimeModeSelection' } as never);
   };
 
   const handleLearnPress = () => {

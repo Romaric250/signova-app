@@ -39,7 +39,6 @@ export default {
     extra: {
       API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:5000/api',
       APP_ENV: process.env.APP_ENV || 'development',
-      OPENAI_API_KEY: process.env.OPENAI_API_KEY || '',
     },
   },
 };

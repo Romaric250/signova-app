@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { View, ActivityIndicator } from 'react-native';
 import { AuthStackParamList } from './types';
@@ -23,12 +23,16 @@ export const AuthNavigator: React.FC = () => {
     );
   }
 
+  // Ensure boolean conversion and valid route name
+  const completed: boolean = Boolean(isOnboardingCompleted);
+  const initialRoute: 'Login' | 'Onboarding' = completed ? 'Login' : 'Onboarding';
+
   return (
     <Stack.Navigator
-      initialRouteName={isOnboardingCompleted ? 'Login' : 'Onboarding'}
+      initialRouteName={initialRoute}
       screenOptions={{
         headerShown: false,
-        animation: 'slide_from_right',
+        animation: 'slide_from_right' as const,
       }}
     >
       <Stack.Screen name="Onboarding" component={OnboardingScreen} />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, ScrollView, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Alert, ActivityIndicator, Animated } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -12,14 +12,23 @@ import { useAudioToText } from '@/hooks/useAudioToText';
 
 type NavigationProp = NativeStackNavigationProp<any>;
 
+const formatTime = (seconds: number): string => {
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+};
+
 export const LiveCaptionsScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const [transcript, setTranscript] = useState('');
   const [noiseLevel, setNoiseLevel] = useState(65); // 0-100
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
   const [isRecording, setIsRecording] = useState(false);
+  const [recordingTime, setRecordingTime] = useState(0); // in seconds
   const { transcribe, isLoading, error, result, reset } = useAudioToText();
   const recordingRef = useRef<Audio.Recording | null>(null);
+  const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const animatedValue = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     // Request permissions on mount
@@ -41,6 +50,55 @@ export const LiveCaptionsScreen: React.FC = () => {
       reset();
     }
   }, [error, reset]);
+
+  // Timer effect for recording
+  useEffect(() => {
+    if (isRecording) {
+      // Start timer
+      timerIntervalRef.current = setInterval(() => {
+        setRecordingTime((prev) => prev + 1);
+      }, 1000);
+
+      // Start animated progress bar
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(animatedValue, {
+            toValue: 100,
+            duration: 2000,
+            useNativeDriver: false,
+          }),
+          Animated.timing(animatedValue, {
+            toValue: 0,
+            duration: 2000,
+            useNativeDriver: false,
+          }),
+        ])
+      ).start();
+
+      // Simulate noise level changes during recording
+      const noiseInterval = setInterval(() => {
+        setNoiseLevel((prev) => {
+          const change = Math.random() * 20 - 10; // Random change between -10 and +10
+          const newLevel = prev + change;
+          return Math.max(20, Math.min(90, newLevel)); // Keep between 20-90
+        });
+      }, 500);
+    } else {
+      // Stop timer and reset
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+        timerIntervalRef.current = null;
+      }
+      setRecordingTime(0);
+      animatedValue.setValue(0);
+    }
+
+    return () => {
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+      }
+    };
+  }, [isRecording, animatedValue]);
 
   const getNoiseLevelLabel = (level: number) => {
     if (level < 30) return 'Low';
@@ -82,6 +140,7 @@ export const LiveCaptionsScreen: React.FC = () => {
 
     try {
       setIsRecording(false);
+      setRecordingTime(0); // Reset timer
       await recordingRef.current.stopAndUnloadAsync();
       const uri = recordingRef.current.getURI();
 
@@ -99,6 +158,7 @@ export const LiveCaptionsScreen: React.FC = () => {
       console.error('Failed to stop recording', err);
       Alert.alert('Error', 'Failed to process recording. Please try again.');
       setIsRecording(false);
+      setRecordingTime(0); // Reset timer on error
       setRecording(null);
       recordingRef.current = null;
     }
@@ -152,21 +212,69 @@ export const LiveCaptionsScreen: React.FC = () => {
             </Text>
           </View>
 
-          {/* Noise Level Indicator */}
-          <View className="mb-6">
-            <Text variant="h4" className="text-white font-bold mb-2">
-              Noise Level
-            </Text>
-            <Text variant="body" className="text-white mb-3">
-              {getNoiseLevelLabel(noiseLevel)}
-            </Text>
-            <ProgressBar progress={noiseLevel} height={8} />
-          </View>
+          {/* Recording Timer */}
+          {isRecording && (
+            <View className="mb-6 items-center">
+              <View className="flex-row items-center mb-2">
+                <View className="w-3 h-3 bg-red-500 rounded-full mr-2" />
+                <Text variant="h2" className="text-white font-bold">
+                  {formatTime(recordingTime)}
+                </Text>
+              </View>
+              <Text variant="body" className="text-white/70">
+                Recording...
+              </Text>
+            </View>
+          )}
+
+          {/* Recording Activity Indicator */}
+          {isRecording && (
+            <View className="mb-6">
+              <View className="flex-row items-center justify-between mb-2">
+                <Text variant="h4" className="text-white font-bold">
+                  Audio Level
+                </Text>
+                <Text variant="body" className="text-white/70">
+                  {getNoiseLevelLabel(noiseLevel)}
+                </Text>
+              </View>
+              <View className="relative">
+                <ProgressBar progress={noiseLevel} height={10} />
+                <Animated.View
+                  style={{
+                    position: 'absolute',
+                    left: 0,
+                    top: 0,
+                    bottom: 0,
+                    width: animatedValue.interpolate({
+                      inputRange: [0, 100],
+                      outputRange: ['0%', '100%'],
+                    }),
+                    backgroundColor: 'rgba(56, 224, 120, 0.3)',
+                    borderRadius: 4,
+                  }}
+                />
+              </View>
+            </View>
+          )}
+
+          {/* Noise Level Indicator (when not recording) */}
+          {!isRecording && (
+            <View className="mb-6">
+              <Text variant="h4" className="text-white font-bold mb-2">
+                Noise Level
+              </Text>
+              <Text variant="body" className="text-white mb-3">
+                {getNoiseLevelLabel(noiseLevel)}
+              </Text>
+              <ProgressBar progress={noiseLevel} height={8} />
+            </View>
+          )}
 
           {/* Recording Button */}
           <View className="mb-6">
             <Button
-              title={isRecording ? 'Stop Recording' : 'Start Recording'}
+              title={isRecording ? `Stop Recording (${formatTime(recordingTime)})` : 'Start Recording'}
               onPress={handleToggleRecording}
               variant={isRecording ? 'dark' : 'primary'}
               disabled={isLoading}

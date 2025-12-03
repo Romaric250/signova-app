@@ -8,37 +8,60 @@ export const signsApi = {
     const response = await apiClient.get<ApiResponse<Sign[]>>(API_ENDPOINTS.SIGNS.LIST, {
       params: filter,
     });
-    return response.data.data;
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.message || 'Failed to fetch signs');
   },
 
   searchSigns: async (query: string): Promise<Sign[]> => {
     const response = await apiClient.get<ApiResponse<Sign[]>>(API_ENDPOINTS.SIGNS.SEARCH, {
       params: { q: query },
     });
-    return response.data.data;
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.message || 'Failed to search signs');
   },
 
   getSignById: async (id: string): Promise<Sign> => {
     const response = await apiClient.get<ApiResponse<Sign>>(
       API_ENDPOINTS.SIGNS.DETAIL.replace(':id', id)
     );
-    return response.data.data;
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.message || 'Failed to fetch sign');
   },
 
   getCategories: async (): Promise<SignCategory[]> => {
-    const response = await apiClient.get<ApiResponse<SignCategory[]>>(
-      API_ENDPOINTS.SIGNS.CATEGORIES
-    );
-    return response.data.data;
+    // Backend doesn't have categories endpoint, return empty array for now
+    // This can be derived from signs data
+    return [];
   },
 
   getFavorites: async (): Promise<Sign[]> => {
     const response = await apiClient.get<ApiResponse<Sign[]>>(API_ENDPOINTS.SIGNS.FAVORITES);
-    return response.data.data;
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.message || 'Failed to fetch favorites');
   },
 
-  toggleFavorite: async (signId: string): Promise<void> => {
-    await apiClient.post(`${API_ENDPOINTS.SIGNS.FAVORITES}/${signId}`);
+  addToFavorites: async (signId: string): Promise<void> => {
+    const response = await apiClient.post(API_ENDPOINTS.SIGNS.FAVORITES, { signId });
+    if (!response.data.success) {
+      throw new Error(response.data.message || 'Failed to add favorite');
+    }
+  },
+
+  removeFromFavorites: async (signId: string): Promise<void> => {
+    const response = await apiClient.delete(
+      API_ENDPOINTS.SIGNS.FAVORITES.replace('/favorites', `/favorites/${signId}`)
+    );
+    if (!response.data.success) {
+      throw new Error(response.data.message || 'Failed to remove favorite');
+    }
   },
 };
 

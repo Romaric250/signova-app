@@ -14,9 +14,9 @@ export const API_ENDPOINTS = {
     RESET_PASSWORD: '/auth/reset-password',
   },
   USER: {
-    PROFILE: '/user/profile',
-    UPDATE_PROFILE: '/user/profile',
-    AVATAR: '/user/avatar',
+    PROFILE: '/users/me',
+    UPDATE_PROFILE: '/users/me',
+    PREFERENCES: '/users/preferences',
   },
   SIGNS: {
     LIST: '/signs',
@@ -25,15 +25,15 @@ export const API_ENDPOINTS = {
     FAVORITES: '/signs/favorites',
     CATEGORIES: '/signs/categories',
   },
-  LEARNING: {
-    LESSONS: '/learning/lessons',
-    LESSON_DETAIL: '/learning/lessons/:id',
-    PROGRESS: '/learning/progress',
-    ACHIEVEMENTS: '/learning/achievements',
+  PROGRESS: {
+    GET: '/progress',
+    UPDATE: '/progress/update',
+    STREAK: '/progress/streak',
+    ACHIEVEMENTS: '/progress/achievements',
   },
   TRANSLATE: {
-    SPEECH_TO_SIGN: '/translate/speech',
-    TEXT_TO_SIGN: '/translate/text',
+    TRANSCRIBE: '/translate/transcribe',
+    TEXT_TO_SIGN: '/translate/text-to-sign',
     HISTORY: '/translate/history',
   },
 };

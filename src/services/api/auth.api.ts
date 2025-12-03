@@ -9,15 +9,25 @@ export const authApi = {
       API_ENDPOINTS.AUTH.LOGIN,
       credentials
     );
-    return response.data.data;
+    // Backend returns { success: true, data: {...} }
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.message || 'Login failed');
   },
 
   signup: async (data: SignupData): Promise<AuthResponse> => {
+    // Remove confirmPassword before sending to backend
+    const { confirmPassword, ...signupPayload } = data;
     const response = await apiClient.post<ApiResponse<AuthResponse>>(
       API_ENDPOINTS.AUTH.SIGNUP,
-      data
+      signupPayload
     );
-    return response.data.data;
+    // Backend returns { success: true, data: {...} }
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.message || 'Signup failed');
   },
 
   logout: async (): Promise<void> => {
@@ -29,15 +39,25 @@ export const authApi = {
       API_ENDPOINTS.AUTH.REFRESH,
       { refreshToken }
     );
-    return response.data.data;
+    // Backend returns { success: true, data: {...} }
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.message || 'Token refresh failed');
   },
 
   forgotPassword: async (email: string): Promise<void> => {
-    await apiClient.post(API_ENDPOINTS.AUTH.FORGOT_PASSWORD, { email });
+    const response = await apiClient.post(API_ENDPOINTS.AUTH.FORGOT_PASSWORD, { email });
+    if (!response.data.success) {
+      throw new Error(response.data.message || 'Failed to send password reset email');
+    }
   },
 
   resetPassword: async (token: string, password: string): Promise<void> => {
-    await apiClient.post(API_ENDPOINTS.AUTH.RESET_PASSWORD, { token, password });
+    const response = await apiClient.post(API_ENDPOINTS.AUTH.RESET_PASSWORD, { token, password });
+    if (!response.data.success) {
+      throw new Error(response.data.message || 'Failed to reset password');
+    }
   },
 };
 

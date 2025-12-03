@@ -18,24 +18,25 @@ export const translateApi = {
   translateText: async (data: TranslationRequest): Promise<TranslationResponse> => {
     const response = await apiClient.post<ApiResponse<TranslationResponse>>(
       API_ENDPOINTS.TRANSLATE.TEXT_TO_SIGN,
-      data
+      { text: data.text, language: data.language }
     );
-    return response.data.data;
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.message || 'Failed to translate text');
   },
 
-  translateSpeech: async (data: TranslationRequest): Promise<TranslationResponse> => {
+  transcribeAudio: async (audioUri: string, language: string): Promise<string> => {
     const formData = new FormData();
-    if (data.audioUri) {
-      formData.append('audio', {
-        uri: data.audioUri,
-        type: 'audio/m4a',
-        name: 'recording.m4a',
-      } as any);
-    }
-    formData.append('language', data.language);
+    formData.append('audio', {
+      uri: audioUri,
+      type: 'audio/m4a',
+      name: 'recording.m4a',
+    } as any);
+    formData.append('language', language);
 
-    const response = await apiClient.post<ApiResponse<TranslationResponse>>(
-      API_ENDPOINTS.TRANSLATE.SPEECH_TO_SIGN,
+    const response = await apiClient.post<ApiResponse<{ text: string }>>(
+      API_ENDPOINTS.TRANSLATE.TRANSCRIBE,
       formData,
       {
         headers: {
@@ -43,14 +44,20 @@ export const translateApi = {
         },
       }
     );
-    return response.data.data;
+    if (response.data.success && response.data.data) {
+      return response.data.data.text;
+    }
+    throw new Error(response.data.message || 'Failed to transcribe audio');
   },
 
   getHistory: async (): Promise<TranslationResponse[]> => {
     const response = await apiClient.get<ApiResponse<TranslationResponse[]>>(
       API_ENDPOINTS.TRANSLATE.HISTORY
     );
-    return response.data.data;
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.message || 'Failed to fetch translation history');
   },
 };
 

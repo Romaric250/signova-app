@@ -24,16 +24,14 @@ export const SignupScreen: React.FC = () => {
   const handleSignup = async (data: SignupData) => {
     const result = await signup(data);
     if (result.success) {
+      // Navigation will happen automatically via AppNavigator when isAuthenticated becomes true
+      // But we can also navigate to sign language selection if needed
       navigation.navigate('SignLanguageSelection');
     } else {
-      // TODO: Show error toast
+      // Show error alert
       console.error('Signup error:', result.error);
+      alert(result.error || 'Signup failed. Please try again.');
     }
-  };
-
-  const handleBypass = () => {
-    // Bypass authentication for development - directly navigate to sign language selection
-    navigation.navigate('SignLanguageSelection');
   };
 
   return (
@@ -121,7 +119,7 @@ export const SignupScreen: React.FC = () => {
 
           <Button
             title="Sign Up"
-            onPress={handleBypass}
+            onPress={handleSubmit(handleSignup)}
             variant="primary"
             loading={isLoading}
             className="mb-4"

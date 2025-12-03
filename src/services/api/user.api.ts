@@ -6,35 +6,28 @@ import { ApiResponse } from '@/types/api.types';
 export const userApi = {
   getProfile: async (): Promise<UserProfile> => {
     const response = await apiClient.get<ApiResponse<UserProfile>>(API_ENDPOINTS.USER.PROFILE);
-    return response.data.data;
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.message || 'Failed to fetch profile');
   },
 
   updateProfile: async (data: Partial<UserProfile>): Promise<UserProfile> => {
-    const response = await apiClient.put<ApiResponse<UserProfile>>(
+    const response = await apiClient.patch<ApiResponse<UserProfile>>(
       API_ENDPOINTS.USER.UPDATE_PROFILE,
       data
     );
-    return response.data.data;
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.message || 'Failed to update profile');
   },
 
-  uploadAvatar: async (imageUri: string): Promise<string> => {
-    const formData = new FormData();
-    formData.append('avatar', {
-      uri: imageUri,
-      type: 'image/jpeg',
-      name: 'avatar.jpg',
-    } as any);
-
-    const response = await apiClient.post<ApiResponse<{ avatarUrl: string }>>(
-      API_ENDPOINTS.USER.AVATAR,
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      }
-    );
-    return response.data.data.avatarUrl;
+  updatePreferences: async (preferences: Record<string, any>): Promise<void> => {
+    const response = await apiClient.patch(API_ENDPOINTS.USER.PREFERENCES, preferences);
+    if (!response.data.success) {
+      throw new Error(response.data.message || 'Failed to update preferences');
+    }
   },
 };
 

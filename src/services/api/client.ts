@@ -42,11 +42,13 @@ class ApiClient {
           // Navigation will be handled by auth context
         }
 
+        // Handle backend error format: { success: false, error: "...", message: "..." }
+        const errorData = error.response?.data;
         const apiError: ApiError = {
-          message: error.response?.data?.message || error.message || 'An error occurred',
+          message: errorData?.error || errorData?.message || error.message || 'An error occurred',
           code: error.code,
           statusCode: error.response?.status || 500,
-          errors: error.response?.data?.errors,
+          errors: errorData?.errors,
         };
 
         return Promise.reject(apiError);

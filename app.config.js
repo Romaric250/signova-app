@@ -20,6 +20,9 @@ export default {
       },
       package: 'com.signnova.app',
       versionCode: 1,
+      compileSdkVersion: 34,
+      targetSdkVersion: 34,
+      minSdkVersion: 24,
       permissions: [
         'CAMERA',
         'RECORD_AUDIO',

@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { View, ActivityIndicator } from 'react-native';
 import { AuthStackParamList } from './types';
-import { OnboardingScreen } from '@/screens/auth/OnboardingScreen';
-import { LoginScreen } from '@/screens/auth/LoginScreen';
-import { SignupScreen } from '@/screens/auth/SignupScreen';
-import { ForgotPasswordScreen } from '@/screens/auth/ForgotPasswordScreen';
-import { SignLanguageSelectionScreen } from '@/screens/auth/SignLanguageSelectionScreen';
-import { PermissionsScreen } from '@/screens/auth/PermissionsScreen';
-import { useOnboarding } from '@/hooks/useOnboarding';
+import { OnboardingScreen } from '../screens/auth/OnboardingScreen';
+import { LoginScreen } from '../screens/auth/LoginScreen';
+import { SignupScreen } from '../screens/auth/SignupScreen';
+import { ForgotPasswordScreen } from '../screens/auth/ForgotPasswordScreen';
+import { SignLanguageSelectionScreen } from '../screens/auth/SignLanguageSelectionScreen';
+import { PermissionsScreen } from '../screens/auth/PermissionsScreen';
+import { useOnboarding } from '../hooks/useOnboarding';
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 

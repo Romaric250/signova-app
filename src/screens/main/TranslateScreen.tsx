@@ -3,10 +3,10 @@ import { View, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Button } from '@/components/atoms/Button';
-import { Text } from '@/components/atoms/Text';
-import { Icon } from '@/components/atoms/Icon';
-import { Slider } from '@/components/atoms/Slider';
+import { Button } from '../../components/atoms/Button';
+import { Text } from '../../components/atoms/Text';
+import { Icon } from '../../components/atoms/Icon';
+import { Slider } from '../../components/atoms/Slider';
 
 type NavigationProp = NativeStackNavigationProp<any>;
 

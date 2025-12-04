@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Image, Text } from 'react-native';
 import { AvatarProps } from './Avatar.types';
-import { getInitials } from '@/utils/helpers';
+import { getInitials } from '../../../utils/helpers.ts';
 
 export const Avatar: React.FC<AvatarProps> = ({
   source,

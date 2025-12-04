@@ -4,11 +4,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Audio } from 'expo-av';
-import { Text } from '@/components/atoms/Text';
-import { Icon } from '@/components/atoms/Icon';
-import { Button } from '@/components/atoms/Button';
-import { ProgressBar } from '@/components/molecules/ProgressBar';
-import { useAudioToText } from '@/hooks/useAudioToText';
+import { Text } from '../../components/atoms/Text';
+import { Icon } from '../../components/atoms/Icon';
+import { Button } from '../../components/atoms/Button';
+import { ProgressBar } from '../../components/molecules/ProgressBar';
+import { useAudioToText } from '../../hooks/useAudioToText.ts';
 
 type NavigationProp = NativeStackNavigationProp<any>;
 

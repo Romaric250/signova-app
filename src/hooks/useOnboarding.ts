@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getOnboardingCompleted } from '@/services/storage/localStorage';
+import { getOnboardingCompleted } from '../services/storage/localStorage.ts';
 import { Platform } from 'react-native';
 
 export const useOnboarding = () => {

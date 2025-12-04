@@ -2,10 +2,10 @@ import React from 'react';
 import { View, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { FeatureCard } from '@/components/molecules/FeatureCard';
-import { ListItem } from '@/components/molecules/ListItem';
-import { Text } from '@/components/atoms/Text';
-import { Icon } from '@/components/atoms/Icon';
+import { FeatureCard } from '../../components/molecules/FeatureCard';
+import { ListItem } from '../../components/molecules/ListItem';
+import { Text } from '../../components/atoms/Text';
+import { Icon } from '../../components/atoms/Icon';
 
 export const HomeScreen: React.FC = () => {
   const navigation = useNavigation();

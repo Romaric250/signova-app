@@ -1,5 +1,5 @@
-import { User } from '@/types/auth.types';
-import { Sign } from '@/types/sign.types';
+import { User } from '../types/auth.types.ts';
+import { Sign } from '../types/sign.types.ts';
 
 export const mockUser: User = {
   id: '1',

@@ -1,7 +1,7 @@
 import { apiClient } from './client';
-import { API_ENDPOINTS } from '@/config/api.config';
-import { UserProgress } from '@/types/user.types';
-import { ApiResponse } from '@/types/api.types';
+import { API_ENDPOINTS } from '../../config/api.config.ts';
+import { UserProgress } from '../../types/user.types.ts';
+import { ApiResponse } from '../../types/api.types.ts';
 
 export const progressApi = {
   getProgress: async (): Promise<UserProgress> => {

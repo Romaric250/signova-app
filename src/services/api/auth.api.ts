@@ -1,7 +1,7 @@
 import { apiClient } from './client';
-import { API_ENDPOINTS } from '@/config/api.config';
-import { LoginCredentials, SignupData, AuthResponse } from '@/types/auth.types';
-import { ApiResponse } from '@/types/api.types';
+import { API_ENDPOINTS } from '../../config/api.config.ts';
+import { LoginCredentials, SignupData, AuthResponse } from '../../types/auth.types.ts';
+import { ApiResponse } from '../../types/api.types.ts';
 
 export const authApi = {
   login: async (credentials: LoginCredentials): Promise<AuthResponse> => {

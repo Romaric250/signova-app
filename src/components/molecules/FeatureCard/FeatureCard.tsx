@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Image } from 'react-native';
-import { Text } from '@/components/atoms/Text';
+import { Text } from '../../atoms/Text';
 
 interface FeatureCardProps {
   title: string;

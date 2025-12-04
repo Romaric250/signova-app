@@ -1,7 +1,7 @@
 import { apiClient } from './client';
-import { API_ENDPOINTS } from '@/config/api.config';
-import { UserProfile } from '@/types/user.types';
-import { ApiResponse } from '@/types/api.types';
+import { API_ENDPOINTS } from '../../config/api.config.ts';
+import { UserProfile } from '../../types/user.types.ts';
+import { ApiResponse } from '../../types/api.types.ts';
 
 export const userApi = {
   getProfile: async (): Promise<UserProfile> => {

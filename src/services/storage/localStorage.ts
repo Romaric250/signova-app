@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
-import { STORAGE_KEYS } from '@/utils/constants';
+import { STORAGE_KEYS } from '../../utils/constants.ts';
 
 export const setItem = async (key: string, value: string): Promise<void> => {
   try {

@@ -1,7 +1,7 @@
 import { apiClient } from './client';
-import { API_ENDPOINTS } from '@/config/api.config';
-import { Sign, SignCategory, SignFilter } from '@/types/sign.types';
-import { ApiResponse, PaginatedResponse } from '@/types/api.types';
+import { API_ENDPOINTS } from '../../config/api.config.ts';
+import { Sign, SignCategory, SignFilter } from '../../types/sign.types.ts';
+import { ApiResponse, PaginatedResponse } from '../../types/api.types.ts';
 
 export const signsApi = {
   getSigns: async (filter?: SignFilter): Promise<Sign[]> => {

@@ -3,10 +3,10 @@ import { View, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Button } from '@/components/atoms/Button';
-import { Text } from '@/components/atoms/Text';
-import { Dropdown, DropdownOption } from '@/components/molecules/Dropdown';
-import { AuthStackParamList } from '@/types/navigation.types';
+import { Button } from '../../components/atoms/Button';
+import { Text } from '../../components/atoms/Text';
+import { Dropdown, DropdownOption } from '../../components/molecules/Dropdown';
+import { AuthStackParamList } from '../../types/navigation.types.ts';
 
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList>;
 

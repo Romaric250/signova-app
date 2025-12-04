@@ -3,12 +3,12 @@ import { View, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Button } from '@/components/atoms/Button';
-import { Text } from '@/components/atoms/Text';
-import { Icon } from '@/components/atoms/Icon';
-import { AuthStackParamList } from '@/types/navigation.types';
-import { useAuthStore } from '@/store/authStore';
-import { mockUser } from '@/utils/mockData';
+import { Button } from '../../components/atoms/Button';
+import { Text } from '../../components/atoms/Text';
+import { Icon } from '../../components/atoms/Icon';
+import { AuthStackParamList } from '../../types/navigation.types.ts';
+import { useAuthStore } from '../../store/authStore.ts';
+import { mockUser } from '../../utils/mockData.ts';
 
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList>;
 

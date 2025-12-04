@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, Image, TouchableOpacity } from 'react-native';
-import { Text } from '@/components/atoms/Text';
-import { Badge } from '@/components/atoms/Badge';
-import { Icon } from '@/components/atoms/Icon';
-import { Sign } from '@/types/sign.types';
+import { Text } from '../../atoms/Text';
+import { Badge } from '../../atoms/Badge';
+import { Icon } from '../../atoms/Icon';
+import { Sign } from '../../../types/sign.types.ts';
 
 interface SignCardProps {
   sign: Sign;

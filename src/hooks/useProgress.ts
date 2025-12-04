@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { UserProgress } from '@/types/user.types';
-import { progressApi } from '@/services/api/progress.api';
-import { mockUser } from '@/utils/mockData';
+import { UserProgress } from '../types/user.types.ts';
+import { progressApi } from '../services/api/progress.api.ts';
+import { mockUser } from '../utils/mockData.ts';
 
 export const useProgress = () => {
   const [progress, setProgress] = useState<UserProgress | null>(null);

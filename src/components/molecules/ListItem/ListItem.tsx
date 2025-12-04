@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
-import { Text } from '@/components/atoms/Text';
-import { Icon } from '@/components/atoms/Icon';
+import { Text } from '../../atoms/Text';
+import { Icon } from '../../atoms/Icon';
 
 interface ListItemProps {
   title: string;

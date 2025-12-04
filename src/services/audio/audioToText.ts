@@ -1,4 +1,4 @@
-import { OPENAI_API_KEY } from '@/config/env';
+import { OPENAI_API_KEY } from '../../config/env.ts';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
 

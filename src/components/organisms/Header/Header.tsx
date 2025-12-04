@@ -1,9 +1,9 @@
 import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Text } from '@/components/atoms/Text';
-import { Icon } from '@/components/atoms/Icon';
-import { Avatar } from '@/components/atoms/Avatar';
+import { Text } from '../../atoms/Text';
+import { Icon } from '../../atoms/Icon';
+import { Avatar } from '../../atoms/Avatar';
 
 interface HeaderProps {
   title?: string;

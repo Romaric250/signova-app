@@ -1,9 +1,9 @@
 import React from 'react';
 import { View } from 'react-native';
 import { Controller, Control, FieldValues, Path, RegisterOptions } from 'react-hook-form';
-import { Input } from '@/components/atoms/Input';
-import { Text } from '@/components/atoms/Text';
-import { InputProps } from '@/components/atoms/Input/Input.types';
+import { Input } from '../../atoms/Input';
+import { Text } from '../../atoms/Text';
+import { InputProps } from '../../atoms/Input/Input.types.ts';
 
 export interface FormInputProps<T extends FieldValues> extends Omit<InputProps, 'value' | 'onChangeText' | 'error'> {
   name: Path<T>;

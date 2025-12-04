@@ -1,12 +1,12 @@
 import React from 'react';
 import { View, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Header } from '@/components/organisms/Header';
-import { Card } from '@/components/molecules/Card';
-import { ProgressBar } from '@/components/molecules/ProgressBar';
-import { Text } from '@/components/atoms/Text';
-import { Badge } from '@/components/atoms/Badge';
-import { mockLessons } from '@/utils/mockData';
+import { Header } from '../../components/organisms/Header';
+import { Card } from '../../components/molecules/Card';
+import { ProgressBar } from '../../components/molecules/ProgressBar';
+import { Text } from '../../components/atoms/Text';
+import { Badge } from '../../components/atoms/Badge';
+import { mockLessons } from '../../utils/mockData.ts';
 
 export const LearningScreen: React.FC = () => {
   return (

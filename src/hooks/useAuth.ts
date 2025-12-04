@@ -1,6 +1,6 @@
-import { useAuthStore } from '@/store/authStore';
-import { authApi } from '@/services/api/auth.api';
-import { LoginCredentials, SignupData } from '@/types/auth.types';
+import { useAuthStore } from '../store/authStore.ts';
+import { authApi } from '../services/api/auth.api.ts';
+import { LoginCredentials, SignupData } from '../types/auth.types.ts';
 
 export const useAuth = () => {
   const {

@@ -6,11 +6,11 @@ import { RootStackParamList } from './types';
 import { AuthNavigator } from './AuthNavigator';
 import { MainNavigator } from './MainNavigator';
 import { TranslateNavigator } from './TranslateNavigator';
-import { RealTimeModeSelectionScreen } from '@/screens/main/RealTimeModeSelectionScreen';
-import { TranslateScreen } from '@/screens/main/TranslateScreen';
-import { LiveCaptionsScreen } from '@/screens/main/LiveCaptionsScreen';
-import { SignRecordingScreen } from '@/screens/main/SignRecordingScreen';
-import { useAuthStore } from '@/store/authStore';
+import { RealTimeModeSelectionScreen } from '../screens/main/RealTimeModeSelectionScreen';
+import { TranslateScreen } from '../screens/main/TranslateScreen';
+import { LiveCaptionsScreen } from '../screens/main/LiveCaptionsScreen';
+import { SignRecordingScreen } from '../screens/main/SignRecordingScreen';
+import { useAuthStore } from '../store/authStore';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

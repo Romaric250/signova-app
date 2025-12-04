@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { View, FlatList, TouchableOpacity, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { Text } from '@/components/atoms/Text';
-import { Icon } from '@/components/atoms/Icon';
-import { mockSigns } from '@/utils/mockData';
-import { Sign } from '@/types/sign.types';
+import { Text } from '../../components/atoms/Text';
+import { Icon } from '../../components/atoms/Icon';
+import { mockSigns } from '../../utils/mockData.ts';
+import { Sign } from '../../types/sign.types.ts';
 
 export const DictionaryScreen: React.FC = () => {
   const navigation = useNavigation();

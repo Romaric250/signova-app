@@ -61,6 +61,7 @@
     "@types/react-native": "^0.72.8",
     "@typescript-eslint/eslint-plugin": "^8.48.0",
     "@typescript-eslint/parser": "^8.48.0",
+    "babel-plugin-module-resolver": "^5.0.2",
     "eslint": "^9.39.1",
     "prettier": "^3.7.2",
     "typescript": "^5.9.3"

@@ -2,13 +2,13 @@ import React from 'react';
 import { View, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { Header } from '@/components/organisms/Header';
-import { ListItem } from '@/components/molecules/ListItem';
-import { Card } from '@/components/molecules/Card';
-import { Avatar } from '@/components/atoms/Avatar';
-import { Text } from '@/components/atoms/Text';
-import { Icon } from '@/components/atoms/Icon';
-import { useAuth } from '@/hooks/useAuth';
+import { Header } from '../../components/organisms/Header';
+import { ListItem } from '../../components/molecules/ListItem';
+import { Card } from '../../components/molecules/Card';
+import { Avatar } from '../../components/atoms/Avatar';
+import { Text } from '../../components/atoms/Text';
+import { Icon } from '../../components/atoms/Icon';
+import { useAuth } from '../../hooks/useAuth.ts';
 
 export const ProfileScreen: React.FC = () => {
   const navigation = useNavigation();

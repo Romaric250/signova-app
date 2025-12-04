@@ -1,6 +1,6 @@
 import { apiClient } from './client';
-import { API_ENDPOINTS } from '@/config/api.config';
-import { ApiResponse } from '@/types/api.types';
+import { API_ENDPOINTS } from '../../config/api.config.ts';
+import { ApiResponse } from '../../types/api.types.ts';
 
 export interface TranslationRequest {
   text?: string;

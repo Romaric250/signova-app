@@ -5,7 +5,7 @@
  * in your React Native components.
  */
 
-import { transcribeAudio, useAudioToText } from '@/services/audio/audioToText';
+import { transcribeAudio, useAudioToText } from './audioToText.ts';
 import { Audio } from 'expo-av';
 import { useState } from 'react';
 

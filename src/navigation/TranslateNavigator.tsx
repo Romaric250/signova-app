@@ -1,9 +1,9 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { TranslateStackParamList } from './types';
-import { RealTimeModeSelectionScreen } from '@/screens/main/RealTimeModeSelectionScreen';
-import { TranslateScreen } from '@/screens/main/TranslateScreen';
-import { LiveCaptionsScreen } from '@/screens/main/LiveCaptionsScreen';
+import { RealTimeModeSelectionScreen } from '../screens/main/RealTimeModeSelectionScreen';
+import { TranslateScreen } from '../screens/main/TranslateScreen';
+import { LiveCaptionsScreen } from '../screens/main/LiveCaptionsScreen';
 
 const Stack = createNativeStackNavigator<TranslateStackParamList>();
 

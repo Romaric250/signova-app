@@ -4,12 +4,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useForm } from 'react-hook-form';
-import { Button } from '@/components/atoms/Button';
-import { FormInput } from '@/components/molecules/FormInput';
-import { Text } from '@/components/atoms/Text';
-import { Header } from '@/components/organisms/Header';
-import { AuthStackParamList } from '@/types/navigation.types';
-import { validateEmail } from '@/utils/validation';
+import { Button } from '../../components/atoms/Button';
+import { FormInput } from '../../components/molecules/FormInput';
+import { Text } from '../../components/atoms/Text';
+import { Header } from '../../components/organisms/Header';
+import { AuthStackParamList } from '../../types/navigation.types.ts';
+import { validateEmail } from '../../utils/validation.ts';
 
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList>;
 

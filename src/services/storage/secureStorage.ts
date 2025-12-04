@@ -1,6 +1,6 @@
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
-import { STORAGE_KEYS } from '@/utils/constants';
+import { STORAGE_KEYS } from '../../utils/constants.ts';
 
 // In-memory storage fallback for web
 const memoryStorage: Record<string, string> = {};

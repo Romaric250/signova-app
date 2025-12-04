@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity } from 'react-native';
-import { Input } from '@/components/atoms/Input';
-import { Icon } from '@/components/atoms/Icon';
+import { Input } from '../../atoms/Input';
+import { Icon } from '../../atoms/Icon';
 
 interface SearchBarProps {
   value: string;

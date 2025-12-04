@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { User, AuthState } from '@/types/auth.types';
-import { setAuthToken, removeAuthToken } from '@/services/storage/secureStorage';
+import { User, AuthState } from '../types/auth.types.ts';
+import { setAuthToken, removeAuthToken } from '../services/storage/secureStorage.ts';
 
 interface AuthStore extends AuthState {
   setUser: (user: User | null) => void;

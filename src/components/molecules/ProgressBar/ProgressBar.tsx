@@ -1,6 +1,6 @@
 import React from 'react';
 import { View } from 'react-native';
-import { Text } from '@/components/atoms/Text';
+import { Text } from '../../atoms/Text';
 
 interface ProgressBarProps {
   progress: number; // 0-100

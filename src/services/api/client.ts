@@ -1,8 +1,8 @@
 import axios, { AxiosInstance, AxiosError, InternalAxiosRequestConfig } from 'axios';
-import { API_BASE_URL } from '@/config/env';
-import { API_CONFIG } from '@/config/api.config';
-import { getAuthToken, removeAuthToken } from '@/services/storage/secureStorage';
-import { ApiError } from '@/types/api.types';
+import { API_BASE_URL } from '../../config/env.ts';
+import { API_CONFIG } from '../../config/api.config.ts';
+import { getAuthToken, removeAuthToken } from '../storage/secureStorage.ts';
+import { ApiError } from '../../types/api.types.ts';
 
 class ApiClient {
   private client: AxiosInstance;

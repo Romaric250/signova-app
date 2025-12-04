@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import { transcribeAudio, TranscriptionResult, TranscriptionOptions, AudioToTextError } from '@/services/audio/audioToText';
+import { transcribeAudio, TranscriptionResult, TranscriptionOptions, AudioToTextError } from '../services/audio/audioToText.ts';
 
 interface UseAudioToTextReturn {
   transcribe: (audioUri: string, options?: TranscriptionOptions) => Promise<TranscriptionResult>;

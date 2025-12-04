@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, TouchableOpacity, Modal, FlatList } from 'react-native';
-import { Text } from '@/components/atoms/Text';
-import { Icon } from '@/components/atoms/Icon';
+import { Text } from '../../atoms/Text';
+import { Icon } from '../../atoms/Icon';
 
 export interface DropdownOption {
   id: string;

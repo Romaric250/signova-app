@@ -4,9 +4,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
-import { Button } from '@/components/atoms/Button';
-import { Text } from '@/components/atoms/Text';
-import { Icon } from '@/components/atoms/Icon';
+import { Button } from '../../components/atoms/Button';
+import { Text } from '../../components/atoms/Text';
+import { Icon } from '../../components/atoms/Icon';
 
 type NavigationProp = NativeStackNavigationProp<any>;
 

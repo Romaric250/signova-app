@@ -1,11 +1,11 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MainTabParamList } from './types';
-import { HomeScreen } from '@/screens/main/HomeScreen';
-import { DictionaryScreen } from '@/screens/main/DictionaryScreen';
-import { LearningScreen } from '@/screens/main/LearningScreen';
-import { ProfileScreen } from '@/screens/main/ProfileScreen';
-import { Icon } from '@/components/atoms/Icon';
+import { HomeScreen } from '../screens/main/HomeScreen';
+import { DictionaryScreen } from '../screens/main/DictionaryScreen';
+import { LearningScreen } from '../screens/main/LearningScreen';
+import { ProfileScreen } from '../screens/main/ProfileScreen';
+import { Icon } from '../components/atoms/Icon';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 

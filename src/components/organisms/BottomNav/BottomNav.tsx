@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity } from 'react-native';
-import { Icon } from '@/components/atoms/Icon';
-import { Text } from '@/components/atoms/Text';
+import { Icon } from '../../atoms/Icon';
+import { Text } from '../../atoms/Text';
 
 interface TabItem {
   name: string;

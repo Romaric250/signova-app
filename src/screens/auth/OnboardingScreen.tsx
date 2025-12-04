@@ -3,9 +3,9 @@ import { View, ScrollView, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { Button } from '@/components/atoms/Button';
-import { Text } from '@/components/atoms/Text';
-import { AuthStackParamList } from '@/types/navigation.types';
+import { Button } from '../../components/atoms/Button';
+import { Text } from '../../components/atoms/Text';
+import { AuthStackParamList } from '../../types/navigation.types.ts';
 import Svg, { Path, Circle } from 'react-native-svg';
 
 type NavigationProp = NativeStackNavigationProp<AuthStackParamList>;

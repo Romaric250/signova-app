@@ -1,2 +1,2 @@
-export * from '@/types/navigation.types';
+export * from '../types/navigation.types.ts';
 

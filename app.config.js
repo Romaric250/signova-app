@@ -19,6 +19,13 @@ export default {
         backgroundColor: '#38E078',
       },
       package: 'com.signnova.app',
+      versionCode: 1,
+      permissions: [
+        'CAMERA',
+        'RECORD_AUDIO',
+        'READ_EXTERNAL_STORAGE',
+        'WRITE_EXTERNAL_STORAGE',
+      ],
     },
     plugins: [
       [
@@ -35,6 +42,9 @@ export default {
       ],
     ],
     extra: {
+      eas: {
+        projectId: '1a4fc6a3-1de2-405e-903c-581b8ad9b697',
+      },
       API_BASE_URL: process.env.API_BASE_URL || 'http://localhost:5000/api',
       APP_ENV: process.env.APP_ENV || 'development',
       // Note: For production, use environment variables instead of hardcoding

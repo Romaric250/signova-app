@@ -5,6 +5,11 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
+    "extra": {
+      "eas": {
+        "projectId": "signova-app"
+      }
+    },
     "splash": {
       "resizeMode": "contain",
       "backgroundColor": "#38E078"
@@ -20,7 +25,14 @@
       "adaptiveIcon": {
         "backgroundColor": "#38E078"
       },
-      "package": "com.signnova.app"
+      "package": "com.signnova.app",
+      "versionCode": 1,
+      "permissions": [
+        "CAMERA",
+        "RECORD_AUDIO",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "plugins": [
       [

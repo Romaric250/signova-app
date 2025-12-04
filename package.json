@@ -10,7 +10,9 @@
     "web": "expo start --web",
     "lint": "eslint . --ext .ts,.tsx",
     "type-check": "tsc --noEmit",
-    "test": "jest"
+    "test": "jest",
+    "build:android": "eas build --platform android --profile preview",
+    "build:android:production": "eas build --platform android --profile production"
   },
   "repository": {
     "type": "git",

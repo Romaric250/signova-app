@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -18,15 +18,16 @@ export const LoginScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const { control, handleSubmit, formState: { errors } } = useForm<LoginCredentials>();
   const { login, isLoading } = useAuth();
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const handleLogin = async (data: LoginCredentials) => {
+    setLoginError(null); // Clear previous errors
     const result = await login(data);
     if (result.success) {
       // Navigation will happen automatically via AppNavigator when isAuthenticated becomes true
     } else {
-      // TODO: Show error toast/alert
-      console.error('Login error:', result.error);
-      alert(result.error || 'Login failed. Please try again.');
+      // Set error message to display
+      setLoginError(result.error || 'Login failed. Please try again.');
     }
   };
 
@@ -81,6 +82,14 @@ export const LoginScreen: React.FC = () => {
               />
             </View>
           </View>
+
+          {loginError && (
+            <View className="mb-4 p-4 bg-red-50 rounded-lg border border-red-200">
+              <Text variant="body" className="text-red-600 text-center">
+                {loginError}
+              </Text>
+            </View>
+          )}
 
           <Button
             title="Forgot Password?"

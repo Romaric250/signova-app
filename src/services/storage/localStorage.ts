@@ -165,25 +165,25 @@ export const setOnboardingCompleted = async (completed: boolean): Promise<void> 
 
 export const getOnboardingCompleted = async (): Promise<boolean> => {
   try {
-    const value = await getItem(STORAGE_KEYS.ONBOARDING_COMPLETED);
-    console.log(`[${Platform.OS}] Retrieved onboarding value:`, value, `(type: ${typeof value})`);
-    
-    // Debug: List all AsyncStorage keys on native
-    if (Platform.OS !== 'web') {
-      try {
-        const allKeys = await AsyncStorage.getAllKeys();
-        console.log(`[${Platform.OS}] All AsyncStorage keys:`, allKeys);
-        const allItems = await AsyncStorage.multiGet(allKeys);
-        console.log(`[${Platform.OS}] All AsyncStorage items:`, allItems);
-      } catch (debugError) {
-        console.log(`[${Platform.OS}] Could not list all keys:`, debugError);
-      }
-    }
-    
-    // Ensure we return a proper boolean, not a string
-    const result = value === 'true' || value === true;
-    console.log(`[${Platform.OS}] Converted to boolean:`, result, `(type: ${typeof result})`);
-    return Boolean(result);
+    // Add timeout to prevent hanging
+    const timeoutPromise = new Promise<boolean>((resolve) => {
+      setTimeout(() => {
+        console.warn(`[${Platform.OS}] getOnboardingCompleted timeout, returning false`);
+        resolve(false);
+      }, 2000); // 2 second timeout
+    });
+
+    const getValuePromise = (async () => {
+      const value = await getItem(STORAGE_KEYS.ONBOARDING_COMPLETED);
+      console.log(`[${Platform.OS}] Retrieved onboarding value:`, value, `(type: ${typeof value})`);
+      
+      // Ensure we return a proper boolean, not a string
+      const result = value === 'true' || value === true;
+      console.log(`[${Platform.OS}] Converted to boolean:`, result, `(type: ${typeof result})`);
+      return Boolean(result);
+    })();
+
+    return await Promise.race([getValuePromise, timeoutPromise]);
   } catch (error) {
     console.error(`[${Platform.OS}] Error getting onboarding completed:`, error);
     return false;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -18,19 +18,20 @@ export const SignupScreen: React.FC = () => {
   const navigation = useNavigation<NavigationProp>();
   const { signup, isLoading } = useAuth();
   const { control, handleSubmit, watch, formState: { errors } } = useForm<SignupData>();
+  const [signupError, setSignupError] = useState<string | null>(null);
 
   const password = watch('password');
 
   const handleSignup = async (data: SignupData) => {
+    setSignupError(null); // Clear previous errors
     const result = await signup(data);
     if (result.success) {
       // Navigation will happen automatically via AppNavigator when isAuthenticated becomes true
       // But we can also navigate to sign language selection if needed
       navigation.navigate('SignLanguageSelection');
     } else {
-      // Show error alert
-      console.error('Signup error:', result.error);
-      alert(result.error || 'Signup failed. Please try again.');
+      // Set error message to display
+      setSignupError(result.error || 'Signup failed. Please try again.');
     }
   };
 
@@ -116,6 +117,14 @@ export const SignupScreen: React.FC = () => {
               />
             </View>
           </View>
+
+          {signupError && (
+            <View className="mb-4 p-4 bg-red-50 rounded-lg border border-red-200">
+              <Text variant="body" className="text-red-600 text-center">
+                {signupError}
+              </Text>
+            </View>
+          )}
 
           <Button
             title="Sign Up"

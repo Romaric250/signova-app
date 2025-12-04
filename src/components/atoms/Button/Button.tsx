@@ -1,5 +1,5 @@
 import React from 'react';
-import { TouchableOpacity, Text, ActivityIndicator, View } from 'react-native';
+import { TouchableOpacity, Text, ActivityIndicator, View, StyleSheet } from 'react-native';
 import { ButtonProps } from './Button.types';
 
 export const Button: React.FC<ButtonProps> = ({
@@ -15,100 +15,129 @@ export const Button: React.FC<ButtonProps> = ({
   fullWidth = false,
   ...props
 }) => {
-  const getVariantClasses = () => {
+  // Force boolean conversion - never trust the input
+  const isDisabled = disabled === true || disabled === 'true';
+  const isLoading = loading === true || loading === 'true';
+  const isFullWidth = fullWidth === true || fullWidth === 'true';
+
+  // Get styles based on variant
+  const getVariantStyle = () => {
     switch (variant) {
       case 'primary':
-        return 'bg-primary';
+        return { backgroundColor: '#38E078' };
       case 'secondary':
-        return 'bg-white border-2 border-primary';
+        return { backgroundColor: '#FFFFFF', borderWidth: 2, borderColor: '#38E078' };
       case 'ghost':
-        return 'bg-transparent';
+        return { backgroundColor: 'transparent' };
       case 'danger':
-        return 'bg-red-500';
+        return { backgroundColor: '#EF4444' };
       case 'dark':
-        return 'bg-[#2a3a2e]';
+        return { backgroundColor: '#2a3a2e' };
       case 'outline':
-        return 'bg-transparent border-2 border-white';
+        return { backgroundColor: 'transparent', borderWidth: 2, borderColor: '#FFFFFF' };
       default:
-        return 'bg-primary';
+        return { backgroundColor: '#38E078' };
     }
   };
 
   const getTextColor = () => {
     switch (variant) {
       case 'primary':
-        return 'text-black';
+        return '#000000';
       case 'danger':
       case 'dark':
-        return 'text-white';
+        return '#FFFFFF';
       case 'secondary':
-        return 'text-primary';
+        return '#38E078';
       case 'ghost':
-        return 'text-primary';
+        return '#38E078';
       case 'outline':
-        return 'text-white';
+        return '#FFFFFF';
       default:
-        return 'text-white';
+        return '#FFFFFF';
     }
   };
 
-  const getSizeClasses = () => {
+  const getSizeStyle = () => {
     switch (size) {
       case 'small':
-        return 'px-4 py-2';
+        return { paddingHorizontal: 16, paddingVertical: 8 };
       case 'large':
-        return 'px-8 py-4';
+        return { paddingHorizontal: 32, paddingVertical: 16 };
       default:
-        return 'px-6 py-3';
+        return { paddingHorizontal: 24, paddingVertical: 12 };
     }
   };
 
   const getTextSize = () => {
     switch (size) {
       case 'small':
-        return 'text-sm';
+        return 14;
       case 'large':
-        return 'text-lg';
+        return 18;
       default:
-        return 'text-base';
+        return 16;
     }
   };
 
+  // Filter out any boolean props from spread
+  const safeProps = Object.keys(props).reduce((acc, key) => {
+    const value = props[key as keyof typeof props];
+    // Skip className and any boolean-like props
+    if (key === 'className' || key === 'disabled' || key === 'loading' || key === 'fullWidth') {
+      return acc;
+    }
+    // Convert string booleans to actual booleans
+    if (typeof value === 'string' && (value === 'true' || value === 'false')) {
+      acc[key] = value === 'true';
+    } else {
+      acc[key] = value;
+    }
+    return acc;
+  }, {} as Record<string, any>);
+
+  const containerStyle = [
+    {
+      borderRadius: 8,
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexDirection: 'row',
+      opacity: (isDisabled || isLoading) ? 0.5 : 1,
+      width: isFullWidth ? '100%' : undefined,
+    },
+    getVariantStyle(),
+    getSizeStyle(),
+  ];
+
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      disabled={disabled || loading}
-      className={`
-        rounded-lg items-center justify-center flex-row
-        ${getVariantClasses()}
-        ${getSizeClasses()}
-        ${disabled || loading ? 'opacity-50' : 'opacity-100'}
-        ${fullWidth ? 'w-full' : ''}
-        ${className}
-      `}
-      activeOpacity={0.7}
-      {...props}
-    >
-      {loading ? (
-        <ActivityIndicator
-          color={variant === 'primary' || variant === 'danger' ? '#FFFFFF' : '#38E078'}
-        />
-      ) : (
-        <>
-          {leftIcon && <View className="mr-2">{leftIcon}</View>}
-          <Text
-            className={`
-              font-semibold
-              ${getTextColor()}
-              ${getTextSize()}
-            `}
-          >
-            {title}
-          </Text>
-          {rightIcon && <View className="ml-2">{rightIcon}</View>}
-        </>
-      )}
-    </TouchableOpacity>
+    <View className={className} style={isFullWidth ? { width: '100%' } : undefined}>
+      <TouchableOpacity
+        onPress={onPress}
+        disabled={isDisabled || isLoading}
+        style={containerStyle}
+        activeOpacity={0.7}
+        {...safeProps}
+      >
+        {isLoading ? (
+          <ActivityIndicator
+            color={variant === 'primary' || variant === 'danger' ? '#FFFFFF' : '#38E078'}
+          />
+        ) : (
+          <>
+            {leftIcon && <View style={{ marginRight: 8 }}>{leftIcon}</View>}
+            <Text
+              style={{
+                fontWeight: '600',
+                color: getTextColor(),
+                fontSize: getTextSize(),
+              }}
+            >
+              {title}
+            </Text>
+            {rightIcon && <View style={{ marginLeft: 8 }}>{rightIcon}</View>}
+          </>
+        )}
+      </TouchableOpacity>
+    </View>
   );
 };
-

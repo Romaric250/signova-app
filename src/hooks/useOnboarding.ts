@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getOnboardingCompleted, debugStorage } from '@/services/storage/localStorage';
+import { getOnboardingCompleted } from '@/services/storage/localStorage';
 import { Platform } from 'react-native';
 
 export const useOnboarding = () => {
@@ -7,26 +7,54 @@ export const useOnboarding = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+    let timeoutId: NodeJS.Timeout;
+
     const checkOnboarding = async () => {
       try {
-        // Debug storage on native platforms
-        if (Platform.OS !== 'web') {
-          await debugStorage();
-        }
+        // Add timeout to prevent hanging - reduced to 1 second for faster loading
+        const timeoutPromise = new Promise<boolean>((resolve) => {
+          timeoutId = setTimeout(() => {
+            console.warn(`[${Platform.OS}] Onboarding check timeout, defaulting to false`);
+            if (isMounted) {
+              setIsOnboardingCompleted(false);
+              setIsLoading(false);
+            }
+            resolve(false);
+          }, 1000); // 1 second timeout - faster response
+        });
+
+        const checkPromise = getOnboardingCompleted().then((completed) => {
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+          }
+          return completed;
+        });
+
+        const completed = await Promise.race([checkPromise, timeoutPromise]);
         
-        const completed = await getOnboardingCompleted();
-        console.log(`[${Platform.OS}] Onboarding completed status:`, completed, typeof completed);
-        // Ensure it's always a boolean
-        setIsOnboardingCompleted(Boolean(completed));
+        if (isMounted) {
+          console.log(`[${Platform.OS}] Onboarding completed status:`, completed, typeof completed);
+          setIsOnboardingCompleted(Boolean(completed));
+          setIsLoading(false);
+        }
       } catch (error) {
         console.error(`[${Platform.OS}] Error checking onboarding status:`, error);
-        setIsOnboardingCompleted(false);
-      } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsOnboardingCompleted(false);
+          setIsLoading(false);
+        }
       }
     };
 
     checkOnboarding();
+
+    return () => {
+      isMounted = false;
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
   }, []);
 
   return {

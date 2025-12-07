@@ -3,7 +3,9 @@
 ## Current Build Error
 **Error**: Gradle build failed with unknown error
 
-**Build Logs**: https://expo.dev/accounts/romaric250/projects/signova-app/builds/c4214ecd-f592-4b81-8f99-0321a561a560
+**Latest Build Logs**: https://expo.dev/accounts/romaric250/projects/signova-app/builds/748f4554-26ff-4195-a97a-a2618c73de7c
+
+**Previous Build Logs**: https://expo.dev/accounts/romaric250/projects/signova-app/builds/c4214ecd-f592-4b81-8f99-0321a561a560
 
 ## Steps to Diagnose
 

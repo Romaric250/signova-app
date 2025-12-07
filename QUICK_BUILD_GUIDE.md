@@ -1,5 +1,13 @@
 # ⚡ Quick Build Guide - Catch Errors Before Waiting Hours!
 
+
+
+# important 
+
+npx expo install --check 
+
+
+
 ## The Problem
 EAS Build takes **2+ hours** in the queue, and if there's an error, you have to wait all over again! 😫
 

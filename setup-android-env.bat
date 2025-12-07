@@ -8,7 +8,7 @@ REM Set JDK 17 for React Native
 set JAVA_HOME=C:\Program Files\Microsoft\jdk-17.0.17.10-hotspot
 
 REM Add Android SDK tools to PATH
-set PATH=%JAVA_HOME%\bin;%ANDROID_HOME%\platform-tools;%ANDROID_HOME%\tools;%ANDROID_HOME%\tools\bin;%PATH%
+set PATH=%JAVA_HOME%\bin;%ANDROID_HOME%\platform-tools;%ANDROID_HOME%\cmdline-tools\latest\bin;%ANDROID_HOME%\tools;%ANDROID_HOME%\tools\bin;%PATH%
 
 echo Android SDK configured:
 echo ANDROID_HOME=%ANDROID_HOME%

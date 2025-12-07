@@ -7,7 +7,7 @@ export ANDROID_SDK_ROOT="$ANDROID_HOME"
 # Set JDK 17 for React Native
 export JAVA_HOME="/c/Program Files/Microsoft/jdk-17.0.17.10-hotspot"
 
-export PATH="$JAVA_HOME/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$PATH"
+export PATH="$JAVA_HOME/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$PATH"
 
 echo "Android SDK configured:"
 echo "ANDROID_HOME=$ANDROID_HOME"

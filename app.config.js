@@ -20,7 +20,7 @@ export default {
       },
       package: 'com.signnova.app',
       versionCode: 1,
-      compileSdkVersion: 34,
+      compileSdkVersion: 35,
       targetSdkVersion: 34,
       minSdkVersion: 24,
       permissions: [

@@ -83,7 +83,7 @@ export const OnboardingScreen: React.FC = () => {
       setCurrentPage(currentPage + 1);
     } else {
       // Last onboarding screen - navigate to Signup after completing all 3 screens
-      const { setOnboardingCompleted } = await import('@/services/storage/localStorage');
+      const { setOnboardingCompleted } = await import('../../services/storage/localStorage');
       await setOnboardingCompleted(true);
       // Small delay to ensure storage is persisted before navigation
       await new Promise(resolve => setTimeout(resolve, 100));
@@ -98,7 +98,7 @@ export const OnboardingScreen: React.FC = () => {
 
   const handleLogin = async () => {
     // Mark onboarding as completed
-    const { setOnboardingCompleted } = await import('@/services/storage/localStorage');
+    const { setOnboardingCompleted } = await import('../../services/storage/localStorage');
     await setOnboardingCompleted(true);
     // Small delay to ensure storage is persisted before navigation
     await new Promise(resolve => setTimeout(resolve, 100));

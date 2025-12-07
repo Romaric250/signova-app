@@ -5,14 +5,15 @@
   "main": "expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "lint": "eslint . --ext .ts,.tsx",
     "type-check": "tsc --noEmit",
     "test": "jest",
-    "build:android": "eas build --platform android --profile preview",
-    "build:android:production": "eas build --platform android --profile production"
+    "pre-build": "node scripts/pre-build-check.js",
+    "build:android": "npm run pre-build && eas build --platform android --profile preview",
+    "build:android:production": "npm run pre-build && eas build --platform android --profile production"
   },
   "repository": {
     "type": "git",
@@ -56,6 +57,8 @@
     "zustand": "^5.0.8"
   },
   "devDependencies": {
+    "@react-native-community/cli": "latest",
+    "@react-native/metro-config": "^0.82.0",
     "@types/node": "^24.10.1",
     "@types/react": "^19.1.0",
     "@types/react-native": "^0.72.8",

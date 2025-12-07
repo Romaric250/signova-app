@@ -23,6 +23,7 @@ export const DictionaryScreen: React.FC = () => {
     return matchesSearch && matchesLanguage && matchesCategory;
   });
 
+  
   const handleSignPress = (sign: Sign) => {
     // TODO: Navigate to sign detail screen
     console.log('Sign pressed:', sign);

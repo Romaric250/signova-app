@@ -40,15 +40,26 @@ export const transcribeAudio = async (
   options: TranscriptionOptions = {}
 ): Promise<TranscriptionResult> => {
   // Debug: Log API key status (only first few chars for security)
-  console.log('[AudioToText] API Key check:', OPENAI_API_KEY ? `${OPENAI_API_KEY.substring(0, 10)}...` : 'NOT SET');
+  const keyPrefix = OPENAI_API_KEY ? `${OPENAI_API_KEY.substring(0, 7)}...` : 'NOT SET';
+  console.log('[AudioToText] API Key check:', keyPrefix);
   
   if (!OPENAI_API_KEY || OPENAI_API_KEY.trim() === '') {
-    console.error('[AudioToText] OpenAI API key is missing!');
+    console.error('[AudioToText] ❌ OpenAI API key is missing!');
     console.error('[AudioToText] Available env vars:', {
       hasExpoConfig: !!Constants.expoConfig,
       extraKeys: Constants.expoConfig?.extra ? Object.keys(Constants.expoConfig.extra) : [],
+      hasProcessEnv: !!process.env.OPENAI_API_KEY,
     });
-    throw new Error('OpenAI API key is not configured. Please set OPENAI_API_KEY in your environment variables or app.config.js.');
+    console.error('[AudioToText] 📝 To fix: Create a .env file in the project root with:');
+    console.error('[AudioToText]    OPENAI_API_KEY=sk-your-actual-api-key-here');
+    console.error('[AudioToText]    Then restart the Expo development server.');
+    throw new Error('OpenAI API key is not configured. Please create a .env file with OPENAI_API_KEY=sk-your-key-here and restart the server.');
+  }
+  
+  // Validate API key format (should start with 'sk-')
+  if (!OPENAI_API_KEY.startsWith('sk-')) {
+    console.error('[AudioToText] ⚠️  Warning: API key format appears invalid (should start with "sk-")');
+    console.error('[AudioToText] Current key prefix:', OPENAI_API_KEY.substring(0, 10));
   }
 
   try {

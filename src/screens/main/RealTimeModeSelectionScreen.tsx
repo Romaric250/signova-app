@@ -35,7 +35,7 @@ const workflowOptions: WorkflowOption[] = [
     id: 'live-captioning',
     title: 'Live Captioning Only',
     description: 'Generate live captions from spoken language for accessibility.',
-    icon: 'closed-captioning-outline',
+    icon: 'text-outline',
     route: 'LiveCaptions',
   },
   {

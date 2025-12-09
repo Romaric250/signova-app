@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, ScrollView, TouchableOpacity, Alert, ActivityIndicator, Animated } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Alert, ActivityIndicator, Animated, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -121,11 +121,34 @@ export const LiveCaptionsScreen: React.FC = () => {
         playsInSilentModeIOS: true,
       });
 
-      // Start recording
+      // Start recording with optimal settings for Whisper transcription accuracy
+      // High sample rate (16kHz), mono channel, and proper format for best results
+      // NOTE: expo-av requires BOTH android and ios options, even if running on one platform
+      const recordingOptions = {
+        android: {
+          extension: '.m4a',
+          outputFormat: Audio.AndroidOutputFormat.MPEG_4,
+          audioEncoder: Audio.AndroidAudioEncoder.AAC,
+          sampleRate: 16000, // Whisper works best with 16kHz (its native sample rate)
+          numberOfChannels: 1, // Mono for better accuracy and smaller file size
+          bitRate: 64000, // Adequate bitrate for speech
+        },
+        ios: {
+          extension: '.m4a',
+          outputFormat: Audio.IOSOutputFormat.MPEG4AAC,
+          audioQuality: Audio.IOSAudioQuality.MAX, // Maximum quality
+          sampleRate: 16000, // Whisper's optimal sample rate
+          numberOfChannels: 1, // Mono for speech recognition
+          bitRate: 64000,
+        },
+      };
+
+      console.log('[LiveCaptions] Starting recording with optimized settings for Whisper...');
       const { recording: newRecording } = await Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.HIGH_QUALITY
+        recordingOptions
       );
 
+      console.log('[LiveCaptions] Recording started');
       recordingRef.current = newRecording;
       setRecording(newRecording);
       setIsRecording(true);
@@ -141,22 +164,40 @@ export const LiveCaptionsScreen: React.FC = () => {
     try {
       setIsRecording(false);
       setRecordingTime(0); // Reset timer
+      
+      console.log('[LiveCaptions] Stopping recording...');
+      
+      // Stop and unload the recording
       await recordingRef.current.stopAndUnloadAsync();
       const uri = recordingRef.current.getURI();
 
+      console.log('[LiveCaptions] Recording stopped, URI:', uri);
+
       if (uri) {
-        // Transcribe the audio
+        console.log('[LiveCaptions] Starting transcription...');
+        // Transcribe the audio with optimal settings for accuracy
         await transcribe(uri, {
-          language: 'en', // You can make this configurable
-          responseFormat: 'verbose_json',
+          language: 'en', // Explicitly set language for better accuracy
+          temperature: 0, // 0 = most accurate, deterministic results (recommended for transcription)
+          prompt: 'This is a clear speech recording. Transcribe accurately with proper punctuation and capitalization.', // Guide the model
+          responseFormat: 'verbose_json', // Get detailed results
         });
+        console.log('[LiveCaptions] Transcription completed');
+      } else {
+        console.error('[LiveCaptions] No URI returned from recording');
+        Alert.alert('Error', 'Failed to get recording file. Please try again.');
       }
 
       setRecording(null);
       recordingRef.current = null;
-    } catch (err) {
-      console.error('Failed to stop recording', err);
-      Alert.alert('Error', 'Failed to process recording. Please try again.');
+    } catch (err: any) {
+      console.error('[LiveCaptions] Failed to stop recording:', err);
+      console.error('[LiveCaptions] Error details:', {
+        message: err.message,
+        code: err.code,
+        stack: err.stack,
+      });
+      Alert.alert('Error', `Failed to process recording: ${err.message || 'Unknown error'}`);
       setIsRecording(false);
       setRecordingTime(0); // Reset timer on error
       setRecording(null);

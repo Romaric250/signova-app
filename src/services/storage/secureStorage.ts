@@ -81,3 +81,16 @@ export const removeAuthToken = async (): Promise<void> => {
   return removeSecureItem(STORAGE_KEYS.AUTH_TOKEN);
 };
 
+// User data storage for session restoration
+export const setUserData = async (userData: string): Promise<void> => {
+  return setSecureItem(STORAGE_KEYS.USER_DATA, userData);
+};
+
+export const getUserData = async (): Promise<string | null> => {
+  return getSecureItem(STORAGE_KEYS.USER_DATA);
+};
+
+export const removeUserData = async (): Promise<void> => {
+  return removeSecureItem(STORAGE_KEYS.USER_DATA);
+};
+

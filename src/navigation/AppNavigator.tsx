@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as SplashScreen from 'expo-splash-screen';
@@ -11,20 +12,41 @@ import { TranslateScreen } from '../screens/main/TranslateScreen';
 import { LiveCaptionsScreen } from '../screens/main/LiveCaptionsScreen';
 import { SignRecordingScreen } from '../screens/main/SignRecordingScreen';
 import { useAuthStore } from '../store/authStore';
+import { useSessionRestore } from '../hooks/useSessionRestore';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const AppNavigator: React.FC = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const { isRestoring } = useSessionRestore();
 
   const handleNavigationReady = async () => {
-    try {
-      console.log('[AppNavigator] Navigation container ready, hiding splash screen');
-      await SplashScreen.hideAsync();
-    } catch (error) {
-      console.warn('[AppNavigator] Error hiding splash screen:', error);
+    // Only hide splash screen after session restoration is complete
+    if (!isRestoring) {
+      try {
+        console.log('[AppNavigator] Navigation container ready, hiding splash screen');
+        await SplashScreen.hideAsync();
+      } catch (error) {
+        console.warn('[AppNavigator] Error hiding splash screen:', error);
+      }
     }
   };
+
+  // Hide splash screen when session restoration is complete
+  useEffect(() => {
+    if (!isRestoring) {
+      handleNavigationReady();
+    }
+  }, [isRestoring]);
+
+  // Show loading screen while restoring session
+  if (isRestoring) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#fff' }}>
+        <ActivityIndicator size="large" color="#38E078" />
+      </View>
+    );
+  }
 
   return (
     <NavigationContainer 

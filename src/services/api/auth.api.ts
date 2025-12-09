@@ -179,6 +179,47 @@ export const authApi = {
     await apiClient.post(API_ENDPOINTS.AUTH.LOGOUT);
   },
 
+  getSession: async (): Promise<AuthResponse> => {
+    console.log('🔍 ========== GET SESSION ==========');
+    try {
+      const response = await apiClient.get<ApiResponse<AuthResponse>>(
+        API_ENDPOINTS.AUTH.SESSION
+      );
+      
+      console.log('📥 ========== SESSION RESPONSE ==========');
+      console.log('✅ Status:', response.status, response.statusText);
+      console.log('📦 Response Data:', JSON.stringify(response.data, null, 2));
+      
+      if (response.data.success && response.data.data) {
+        console.log('✅ Session valid!');
+        console.log('👤 User ID:', response.data.data.user?.id);
+        console.log('📧 User Email:', response.data.data.user?.email);
+        return response.data.data;
+      }
+      
+      throw new Error(response.data.error || 'No active session');
+    } catch (error: any) {
+      console.log('❌ ========== SESSION ERROR ==========');
+      console.log('Error type:', error.constructor.name);
+      console.log('Error message:', error.message);
+      console.log('Error code:', error.code);
+      
+      if (error.response) {
+        const statusCode = error.response.status;
+        const errorData = error.response.data;
+        console.log('📡 Server responded with error:');
+        console.log('   Status:', statusCode);
+        console.log('   Data:', JSON.stringify(errorData));
+        
+        if (statusCode === 401) {
+          throw new Error('Session expired or invalid');
+        }
+      }
+      
+      throw error;
+    }
+  },
+
   refreshToken: async (refreshToken: string): Promise<AuthResponse> => {
     const response = await apiClient.post<ApiResponse<AuthResponse>>(
       API_ENDPOINTS.AUTH.REFRESH,

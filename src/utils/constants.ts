@@ -30,6 +30,7 @@ export const LESSON_CATEGORIES = {
 export const STORAGE_KEYS = {
   AUTH_TOKEN: 'authToken',
   REFRESH_TOKEN: 'refreshToken',
+  USER_DATA: 'userData', // Store user data for session restoration
   USER_PREFERENCES: 'userPreferences',
   ONBOARDING_COMPLETED: 'onboardingCompleted',
 } as const;

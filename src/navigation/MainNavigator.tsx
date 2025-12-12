@@ -9,15 +9,26 @@ import { Icon } from '../components/atoms/Icon';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
+// App color palette
+const colors = {
+  primary: '#38E078', // Bright green - buttons, accents
+  background: '#122117', // Dark green - main background
+  surface: '#1A2E23', // Cards, surfaces
+  surfaceLight: '#243D2E', // Borders, dividers
+  text: '#FFFFFF', // White - primary text
+  textMuted: '#6B8B73', // Muted text
+};
+
 export const MainNavigator: React.FC = () => {
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#38E078',
-        tabBarInactiveTintColor: '#FFFFFF',
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: {
-          backgroundColor: '#1a241e',
+          backgroundColor: colors.background,
+          borderTopColor: colors.surfaceLight,
           borderTopWidth: 0,
           elevation: 0,
           height: 60,

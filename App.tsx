@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as SplashScreen from 'expo-splash-screen';
+import { Platform } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import * as NavigationBar from 'expo-navigation-bar';
 import { AppNavigator } from './src/navigation/AppNavigator';
 import './global.css';
 
@@ -22,9 +25,24 @@ export default function App() {
     return () => clearTimeout(timeoutId);
   }, []);
 
+  useEffect(() => {
+    // Configure Android navigation bar
+    if (Platform.OS === 'android') {
+      // Hide the navigation bar completely
+      NavigationBar.setVisibilityAsync('hidden');
+      // Allow user to swipe from bottom to temporarily show it
+      NavigationBar.setBehaviorAsync('overlay-swipe');
+      // Set background to transparent when it does show
+      NavigationBar.setBackgroundColorAsync('transparent');
+      NavigationBar.setPositionAsync('absolute');
+    }
+  }, []);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <AppNavigator />
+      <SafeAreaProvider>
+        <AppNavigator />
+      </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 }

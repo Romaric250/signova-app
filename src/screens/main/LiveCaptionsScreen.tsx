@@ -21,6 +21,19 @@ import { Button } from '../../components/atoms/Button';
 import { ProgressBar } from '../../components/molecules/ProgressBar';
 import { useAudioToText } from '../../hooks/useAudioToText';
 
+// App color palette
+const colors = {
+  primary: '#38E078', // Bright green - buttons, accents
+  primaryDark: '#2BC066',
+  background: '#122117', // Dark green - main background
+  surface: '#1A2E23', // Cards, surfaces
+  surfaceLight: '#243D2E', // Borders, dividers
+  text: '#FFFFFF', // White - primary text
+  textSecondary: '#A0B8A8', // Secondary text
+  textMuted: '#6B8B73', // Muted text
+  danger: '#EF4444', // Red for errors/recording
+};
+
 const formatTime = (seconds: number): string => {
   const mins = Math.floor(seconds / 60);
   const secs = seconds % 60;
@@ -288,20 +301,20 @@ export const LiveCaptionsScreen: React.FC = () => {
   }, [typedMessage]);
 
   return (
-    <SafeAreaView className="flex-1 bg-neutral-900">
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
       <StatusBar barStyle="light-content" />
       <KeyboardAvoidingView 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1"
       >
         {/* Header */}
-        <View className="px-4 py-3 border-b border-neutral-800 flex-row items-center justify-between">
+        <View className="px-4 py-2 flex-row items-center justify-between" style={{ borderBottomWidth: 1, borderBottomColor: colors.surfaceLight }}>
           <View className="w-10" />
           <View className="flex-1">
-            <Text className="text-white text-xl font-bold text-center">
+            <Text style={{ color: colors.text }} className="text-lg font-bold text-center">
               Live Conversation
             </Text>
-            <Text className="text-neutral-400 text-sm text-center mt-1">
+            <Text style={{ color: colors.textSecondary }} className="text-xs text-center mt-0.5">
               Speak or type to communicate
             </Text>
           </View>
@@ -313,8 +326,8 @@ export const LiveCaptionsScreen: React.FC = () => {
           >
             <Ionicons
               name="trash-outline"
-              size={22}
-              color={conversationHistory.length > 0 ? '#ef4444' : '#525252'}
+              size={20}
+              color={conversationHistory.length > 0 ? colors.danger : colors.textMuted}
             />
           </TouchableOpacity>
         </View>
@@ -330,24 +343,38 @@ export const LiveCaptionsScreen: React.FC = () => {
           {conversationHistory.map((message, index) => (
             <View
               key={index}
-              className={`mb-3 p-4 rounded-2xl max-w-[85%] ${
+              className={`mb-2 p-3 rounded-2xl max-w-[85%] ${
                 message.type === 'voice'
-                  ? 'bg-blue-600 self-start rounded-bl-sm'
-                  : 'bg-emerald-600 self-end rounded-br-sm'
+                  ? 'self-start rounded-bl-sm'
+                  : 'self-end rounded-br-sm'
               }`}
+              style={{ 
+                backgroundColor: message.type === 'voice' ? colors.surface : colors.primary 
+              }}
             >
-              <View className="flex-row items-center mb-1">
+              <View className="flex-row items-center mb-0.5">
                 <Ionicons
                   name={message.type === 'voice' ? 'mic' : 'chatbubble'}
-                  size={14}
-                  color="rgba(255,255,255,0.7)"
+                  size={12}
+                  color={message.type === 'voice' ? colors.textSecondary : colors.background}
                 />
-                <Text className="text-white/70 text-xs ml-1">
+                <Text 
+                  className="text-[10px] ml-1"
+                  style={{ color: message.type === 'voice' ? colors.textSecondary : colors.background }}
+                >
                   {message.type === 'voice' ? 'Voice' : 'Typed'}
                 </Text>
               </View>
-              <Text className="text-white text-lg">{message.text}</Text>
-              <Text className="text-white/50 text-xs mt-1">
+              <Text 
+                className="text-sm"
+                style={{ color: message.type === 'voice' ? colors.text : colors.background }}
+              >
+                {message.text}
+              </Text>
+              <Text 
+                className="text-[10px] mt-0.5"
+                style={{ color: message.type === 'voice' ? colors.textMuted : `${colors.background}99` }}
+              >
                 {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </Text>
             </View>
@@ -355,22 +382,25 @@ export const LiveCaptionsScreen: React.FC = () => {
 
           {/* Current transcription (live/processing) */}
           {isLoading && (
-            <View className="mb-3 p-4 rounded-2xl bg-blue-600/50 self-start rounded-bl-sm max-w-[85%]">
-              <View className="flex-row items-center mb-1">
-                <ActivityIndicator size="small" color="rgba(255,255,255,0.7)" />
-                <Text className="text-white/70 text-xs ml-2">Processing...</Text>
+            <View 
+              className="mb-2 p-3 rounded-2xl self-start rounded-bl-sm max-w-[85%]"
+              style={{ backgroundColor: `${colors.surface}80` }}
+            >
+              <View className="flex-row items-center mb-0.5">
+                <ActivityIndicator size="small" color={colors.primary} />
+                <Text style={{ color: colors.textSecondary }} className="text-[10px] ml-2">Processing...</Text>
               </View>
             </View>
           )}
 
           {/* Empty state */}
           {conversationHistory.length === 0 && !isLoading && (
-            <View className="flex-1 items-center justify-center py-20">
-              <Ionicons name="chatbubbles-outline" size={64} color="#525252" />
-              <Text className="text-neutral-500 text-lg mt-4 text-center">
+            <View className="flex-1 items-center justify-center py-16">
+              <Ionicons name="chatbubbles-outline" size={48} color={colors.textMuted} />
+              <Text style={{ color: colors.textSecondary }} className="text-sm mt-3 text-center">
                 Start a conversation
               </Text>
-              <Text className="text-neutral-600 text-sm mt-2 text-center px-8">
+              <Text style={{ color: colors.textMuted }} className="text-xs mt-1 text-center px-8">
                 Tap the microphone to speak, or type a message below
               </Text>
             </View>
@@ -378,17 +408,21 @@ export const LiveCaptionsScreen: React.FC = () => {
         </ScrollView>
 
         {/* Bottom Input Area */}
-        <View className="border-t border-neutral-800 bg-neutral-900 px-4 py-3">
+        <View className="px-4 py-3" style={{ borderTopWidth: 1, borderTopColor: colors.surfaceLight, backgroundColor: colors.background }}>
           {/* Text Input Row */}
-          <View className="flex-row items-end mb-3">
-            <View className="flex-1 bg-neutral-800 rounded-2xl px-4 py-2 mr-2">
+          <View className="flex-row items-end mb-2">
+            <View 
+              className="flex-1 rounded-2xl px-3 py-2 mr-2"
+              style={{ backgroundColor: colors.surface }}
+            >
               <TextInput
                 ref={inputRef}
                 value={typedMessage}
                 onChangeText={setTypedMessage}
                 placeholder="Type a message..."
-                placeholderTextColor="#737373"
-                className="text-white text-base max-h-24"
+                placeholderTextColor={colors.textMuted}
+                style={{ color: colors.text }}
+                className="text-sm max-h-20"
                 multiline
                 returnKeyType="send"
                 onSubmitEditing={handleSendTypedMessage}
@@ -398,14 +432,15 @@ export const LiveCaptionsScreen: React.FC = () => {
             <TouchableOpacity
               onPress={handleSendTypedMessage}
               disabled={!typedMessage.trim()}
-              className={`w-12 h-12 rounded-full items-center justify-center ${
-                typedMessage.trim() ? 'bg-emerald-600' : 'bg-neutral-700'
-              }`}
+              className="w-10 h-10 rounded-full items-center justify-center"
+              style={{ 
+                backgroundColor: typedMessage.trim() ? colors.primary : colors.surface 
+              }}
             >
               <Ionicons
                 name="send"
-                size={20}
-                color={typedMessage.trim() ? 'white' : '#737373'}
+                size={18}
+                color={typedMessage.trim() ? colors.background : colors.textMuted}
               />
             </TouchableOpacity>
           </View>
@@ -414,25 +449,29 @@ export const LiveCaptionsScreen: React.FC = () => {
           <TouchableOpacity
             onPress={isRecording ? handleStopRecording : handleStartRecording}
             disabled={isLoading}
-            className={`w-full py-4 rounded-2xl flex-row items-center justify-center ${
-              isRecording
-                ? 'bg-red-500'
-                : isLoading
-                ? 'bg-neutral-700'
-                : 'bg-blue-600'
-            }`}
+            className="w-full py-3 rounded-2xl flex-row items-center justify-center"
+            style={{ 
+              backgroundColor: isRecording 
+                ? colors.danger 
+                : isLoading 
+                ? colors.surface 
+                : colors.primary 
+            }}
           >
             <Ionicons
               name={isRecording ? 'stop' : 'mic'}
-              size={24}
-              color="white"
+              size={20}
+              color={isRecording || !isLoading ? colors.background : colors.textMuted}
             />
-            <Text className="text-white font-semibold text-base ml-2">
+            <Text 
+              className="font-semibold text-sm ml-2"
+              style={{ color: isRecording || !isLoading ? colors.background : colors.textMuted }}
+            >
               {isRecording
                 ? 'Stop Recording'
                 : isLoading
                 ? 'Processing...'
-                : 'Hold to Speak'}
+                : 'Tap to Speak'}
             </Text>
           </TouchableOpacity>
         </View>

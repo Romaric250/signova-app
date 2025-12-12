@@ -85,8 +85,13 @@ export const useAuthStore = create<AuthStore>((set) => ({
 
       console.log('🔑 Found stored token, validating with server...');
       
-      // Validate session with backend
-      const sessionData = await authApi.getSession();
+      // Validate session with backend (with timeout)
+      const sessionPromise = authApi.getSession();
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Session validation timeout')), 5000)
+      );
+      
+      const sessionData = await Promise.race([sessionPromise, timeoutPromise]) as any;
       
       if (sessionData && sessionData.user && sessionData.token) {
         console.log('✅ Session restored successfully!');
@@ -110,14 +115,22 @@ export const useAuthStore = create<AuthStore>((set) => ({
       set({ isLoading: false, isAuthenticated: false });
       return false;
     } catch (error: any) {
-      console.log('❌ Session restoration failed:', error.message);
+      console.log('❌ Session restoration failed:', error.message || error);
       
-      // If session is invalid, clear stored data
-      try {
-        await removeAuthToken();
-        await removeUserData();
-      } catch (clearError) {
-        console.log('Error clearing invalid session data:', clearError);
+      // Network errors or timeouts should not clear stored data immediately
+      // Only clear if it's an authentication error (401/403)
+      const isAuthError = error?.response?.status === 401 || error?.response?.status === 403;
+      
+      if (isAuthError) {
+        console.log('🔒 Authentication error - clearing stored session');
+        try {
+          await removeAuthToken();
+          await removeUserData();
+        } catch (clearError) {
+          console.log('Error clearing invalid session data:', clearError);
+        }
+      } else {
+        console.log('🌐 Network/timeout error - keeping stored token for retry');
       }
       
       set({

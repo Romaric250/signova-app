@@ -13,9 +13,8 @@ class ApiClient {
     this.client = axios.create({
       baseURL: API_BASE_URL,
       timeout: API_CONFIG.timeout,
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      // Don't set default Content-Type - we'll set it per request
+      // This allows FormData to work correctly
     });
 
     this.setupInterceptors();
@@ -30,6 +29,18 @@ class ApiClient {
           config.headers.Authorization = `Bearer ${token}`;
         }
         
+        // For FormData requests, don't set Content-Type - let axios/browser set it with boundary
+        // Check if data is FormData
+        if (config.data instanceof FormData) {
+          // Remove Content-Type header if it was set, so axios can set it with boundary
+          // This is critical for multipart/form-data to work correctly
+          if (config.headers) {
+            delete config.headers['Content-Type'];
+            delete config.headers['content-type'];
+          }
+          console.log('[ApiClient] FormData detected - Content-Type will be set by axios with boundary');
+        }
+        
         // Comprehensive request logging
         console.log('📡 ========== REQUEST INTERCEPTOR ==========');
         console.log('🔗 Method:', config.method?.toUpperCase());
@@ -38,7 +49,12 @@ class ApiClient {
         console.log('🔗 Full URL:', `${config.baseURL}${config.url}`);
         console.log('⏱️  Timeout:', config.timeout, 'ms');
         console.log('📋 Headers:', JSON.stringify(config.headers, null, 2));
-        console.log('📦 Request Data:', JSON.stringify(config.data, null, 2));
+        // Don't try to JSON.stringify FormData - it will fail
+        if (config.data instanceof FormData) {
+          console.log('📦 Request Data: [FormData - cannot stringify]');
+        } else {
+          console.log('📦 Request Data:', JSON.stringify(config.data, null, 2));
+        }
         console.log('🔧 Request Config:', {
           method: config.method,
           url: config.url,
@@ -47,6 +63,7 @@ class ApiClient {
           timeout: config.timeout,
           withCredentials: config.withCredentials,
           responseType: config.responseType,
+          isFormData: config.data instanceof FormData,
         });
         console.log('✅ Request configured and ready to send');
         console.log('==========================================');

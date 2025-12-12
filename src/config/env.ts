@@ -4,7 +4,7 @@ import { Platform } from 'react-native';
 // ============================================
 // 🔧 EASY SWITCH: Change this to toggle between local and production
 // ============================================
-const USE_LOCAL_BACKEND = true; // Set to true for local development, false for production
+const USE_LOCAL_BACKEND = false; // Set to true for local development, false for production
 // ============================================
 
 // ============================================

@@ -21,7 +21,7 @@ export const AppNavigator: React.FC = () => {
   const { isRestoring } = useSessionRestore();
 
   const handleNavigationReady = async () => {
-    // Only hide splash screen after session restoration is complete
+    // Hide splash screen when navigation is ready and session restoration is complete
     if (!isRestoring) {
       try {
         console.log('[AppNavigator] Navigation container ready, hiding splash screen');
@@ -35,7 +35,11 @@ export const AppNavigator: React.FC = () => {
   // Hide splash screen when session restoration is complete
   useEffect(() => {
     if (!isRestoring) {
-      handleNavigationReady();
+      // Small delay to ensure navigation is rendered
+      const timer = setTimeout(() => {
+        handleNavigationReady();
+      }, 100);
+      return () => clearTimeout(timer);
     }
   }, [isRestoring]);
 

@@ -101,7 +101,15 @@ export const LiveCaptionsScreen: React.FC = () => {
     if (isRecording) {
       // Start timer
       timerIntervalRef.current = setInterval(() => {
-        setRecordingTime((prev) => prev + 1);
+        setRecordingTime((prev) => {
+          const newTime = prev + 1;
+          // Auto-stop at 2 minutes (120 seconds)
+          if (newTime >= 120) {
+            handleStopRecording();
+            return 0;
+          }
+          return newTime;
+        });
       }, 1000);
 
       // Start animated progress bar
@@ -128,13 +136,16 @@ export const LiveCaptionsScreen: React.FC = () => {
           return Math.max(20, Math.min(90, newLevel)); // Keep between 20-90
         });
       }, 500);
+      
+      return () => {
+        clearInterval(noiseInterval);
+      };
     } else {
       // Stop timer and reset
       if (timerIntervalRef.current) {
         clearInterval(timerIntervalRef.current);
         timerIntervalRef.current = null;
       }
-      setRecordingTime(0);
       animatedValue.setValue(0);
     }
 
@@ -417,6 +428,21 @@ export const LiveCaptionsScreen: React.FC = () => {
 
         {/* Bottom Input Area */}
         <View className="px-4 py-3" style={{ borderTopWidth: 1, borderTopColor: colors.surfaceLight, backgroundColor: colors.background }}>
+          {/* Recording Timer - Show when recording */}
+          {isRecording && (
+            <View className="flex-row items-center justify-center mb-2">
+              <View className="flex-row items-center px-3 py-1.5 rounded-full" style={{ backgroundColor: `${colors.danger}20` }}>
+                <View className="w-2 h-2 rounded-full mr-2" style={{ backgroundColor: colors.danger }} />
+                <Text style={{ color: colors.danger }} className="text-sm font-bold">
+                  {formatTime(recordingTime)}
+                </Text>
+                <Text style={{ color: colors.textMuted }} className="text-xs ml-2">
+                  / 02:00
+                </Text>
+              </View>
+            </View>
+          )}
+
           {/* Text Input Row */}
           <View className="flex-row items-end mb-2">
             <View 

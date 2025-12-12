@@ -1,5 +1,6 @@
 import { OPENAI_API_KEY, API_BASE_URL } from '../../config/env';
 import { Platform } from 'react-native';
+import * as FileSystem from 'expo-file-system/legacy';
 import Constants from 'expo-constants';
 import { API_ENDPOINTS } from '../../config/api.config';
 import { apiClient } from '../api/client';
@@ -136,8 +137,8 @@ export const transcribeAudio = async (
     }
     
     // For native platforms, use backend API (consistent with web)
-    // Use fetch instead of axios for better React Native FormData support
-    console.log('[AudioToText] Native platform detected - using backend API via fetch');
+    // Use FileSystem.uploadAsync for reliable file upload on native
+    console.log('[AudioToText] Native platform detected - using FileSystem.uploadAsync');
     
     // Get file extension from URI - handle various URI formats
     // Expo Audio typically records as .m4a on iOS and .3gp/.m4a on Android
@@ -161,29 +162,38 @@ export const transcribeAudio = async (
       mimeType: mimeType,
     });
     
-    // Create FormData for backend API (backend expects field name 'audio')
-    // React Native FormData format: { uri, type, name }
-    const formData = new FormData();
-    formData.append('audio', {
-      uri: audioUri,
-      type: mimeType,
-      name: `audio.${fileExtension}`,
-    } as any);
-    
-    console.log('[AudioToText] FormData created for native:', {
-      hasAudio: true,
-      uri: audioUri.substring(0, 50) + '...',
-      type: mimeType,
-      name: `audio.${fileExtension}`,
+    // Check if file exists first
+    const fileInfo = await FileSystem.getInfoAsync(audioUri);
+    console.log('[AudioToText] File info:', {
+      exists: fileInfo.exists,
+      size: fileInfo.exists ? (fileInfo as any).size : 0,
+      uri: fileInfo.uri,
     });
     
-    // Use fetch for native - it handles React Native FormData better than axios
+    if (!fileInfo.exists) {
+      throw new Error('Audio file does not exist at the specified URI');
+    }
+    
+    // Log more details about the file for debugging
+    const fileSizeKB = fileInfo.exists ? ((fileInfo as any).size / 1024).toFixed(2) : 0;
+    console.log('[AudioToText] File size:', fileSizeKB, 'KB');
+    
+    // Warn if file is suspiciously small (likely empty/corrupt recording)
+    if (fileInfo.exists && (fileInfo as any).size < 5000) {
+      console.warn('[AudioToText] ⚠️ WARNING: Audio file is very small (<5KB)');
+      console.warn('[AudioToText] This usually means:');
+      console.warn('[AudioToText]   1. Recording was too short');
+      console.warn('[AudioToText]   2. Microphone permission issue');
+      console.warn('[AudioToText]   3. Emulator has no microphone access');
+      console.warn('[AudioToText]   4. Recording failed silently');
+    }
+    
+    // Use FileSystem.uploadAsync for native - this properly handles file:// URIs
     const backendUrl = `${API_BASE_URL}${API_ENDPOINTS.TRANSLATE.TRANSCRIBE}`;
     console.log('[AudioToText] ========== SENDING TO BACKEND (NATIVE) ==========');
     console.log('[AudioToText] Endpoint:', API_ENDPOINTS.TRANSLATE.TRANSCRIBE);
     console.log('[AudioToText] Full URL:', backendUrl);
-    console.log('[AudioToText] API_BASE_URL:', API_BASE_URL);
-    console.log('[AudioToText] FormData prepared with audio file');
+    console.log('[AudioToText] Using FileSystem.uploadAsync for reliable native upload');
     
     try {
       // Get auth token from storage
@@ -192,44 +202,44 @@ export const transcribeAudio = async (
       
       console.log('[AudioToText] Auth token present:', !!token);
       
-      // Use fetch - React Native's fetch handles FormData correctly
-      const response = await fetch(backendUrl, {
-        method: 'POST',
+      // Use FileSystem.uploadAsync - this is the recommended way to upload files in Expo
+      const uploadResult = await FileSystem.uploadAsync(backendUrl, audioUri, {
+        httpMethod: 'POST',
+        uploadType: FileSystem.FileSystemUploadType.MULTIPART,
+        fieldName: 'audio',
+        mimeType: mimeType,
         headers: {
           ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
-          // Don't set Content-Type - React Native will set it with boundary for FormData
         },
-        body: formData,
       });
       
       console.log('[AudioToText] ========== BACKEND API RESPONSE (NATIVE) ==========');
-      console.log('[AudioToText] Status:', response.status, response.statusText);
-      console.log('[AudioToText] Headers:', JSON.stringify(Object.fromEntries(response.headers.entries()), null, 2));
+      console.log('[AudioToText] Status:', uploadResult.status);
+      console.log('[AudioToText] Headers:', JSON.stringify(uploadResult.headers, null, 2));
+      console.log('[AudioToText] Body:', uploadResult.body);
       
-      if (!response.ok) {
-        const errorText = await response.text();
+      if (uploadResult.status !== 200) {
         let errorData: any = {};
         try {
-          errorData = JSON.parse(errorText);
+          errorData = JSON.parse(uploadResult.body);
         } catch (e) {
-          console.error('[AudioToText] Failed to parse error response:', errorText);
+          console.error('[AudioToText] Failed to parse error response:', uploadResult.body);
         }
         
         console.error('[AudioToText] Backend API Error:', {
-          status: response.status,
-          statusText: response.statusText,
+          status: uploadResult.status,
           errorData: errorData,
         });
         
         const error: AudioToTextError = {
-          message: errorData.error || errorData.message || `Backend API request failed with status ${response.status}`,
+          message: errorData.error || errorData.message || `Backend API request failed with status ${uploadResult.status}`,
           code: errorData.code,
-          statusCode: response.status,
+          statusCode: uploadResult.status,
         };
         throw error;
       }
       
-      const result = await response.json();
+      const result = JSON.parse(uploadResult.body);
       console.log('[AudioToText] Response Data:', JSON.stringify(result, null, 2));
       
       // Backend returns: { success: true, data: { text: "..." } }
@@ -284,76 +294,6 @@ export const transcribeAudio = async (
     
     throw new Error(`Failed to transcribe audio: ${error.message || 'Unknown error'}`);
   }
-};
-
-/**
- * Creates FormData for web platform
- */
-const createWebFormData = (audioBlob: Blob, options: TranscriptionOptions): FormData => {
-  const formData = new FormData();
-  
-  // IMPORTANT: Model must be added BEFORE the file for some APIs
-  // But OpenAI requires it, so let's add it first to be safe
-  formData.append('model', 'whisper-1');
-  
-  // Append file - use proper filename with extension
-  // Note: For web FormData, the third parameter (filename) is important
-  const fileName = audioBlob.type.includes('m4a') ? 'audio.m4a' : 
-                   audioBlob.type.includes('mp3') ? 'audio.mp3' : 
-                   audioBlob.type.includes('wav') ? 'audio.wav' : 
-                   'audio.m4a'; // default
-  
-  // Create a File object if possible, otherwise use Blob
-  let fileToAppend: File | Blob = audioBlob;
-  if (audioBlob instanceof File) {
-    fileToAppend = audioBlob;
-  } else {
-    // Convert Blob to File-like object for better compatibility
-    fileToAppend = new File([audioBlob], fileName, { type: audioBlob.type || 'audio/m4a' });
-  }
-  
-  formData.append('file', fileToAppend, fileName);
-  
-  // Debug: Log what we're sending (for development)
-  console.log('[AudioToText] Creating FormData:', {
-    hasFile: !!audioBlob,
-    fileSize: audioBlob.size,
-    fileType: audioBlob.type,
-    fileName: fileName,
-    model: 'whisper-1',
-    language: options.language,
-    responseFormat: options.responseFormat,
-    formDataKeys: ['model', 'file', ...(options.language ? ['language'] : []), ...(options.responseFormat ? ['response_format'] : [])],
-  });
-  
-  // Set optimal defaults for accuracy if not provided
-  const finalOptions = {
-    language: options.language || 'en', // Default to English for better accuracy
-    temperature: options.temperature !== undefined ? options.temperature : 0, // 0 = most accurate
-    prompt: options.prompt || 'This is a clear speech recording. Transcribe accurately with proper punctuation and capitalization.',
-    responseFormat: options.responseFormat || 'verbose_json',
-  };
-  
-  console.log('[AudioToText] Using transcription options (web):', {
-    language: finalOptions.language,
-    temperature: finalOptions.temperature,
-    hasPrompt: !!finalOptions.prompt,
-    responseFormat: finalOptions.responseFormat,
-  });
-  
-  // Append parameters to FormData
-  formData.append('language', finalOptions.language);
-  formData.append('temperature', finalOptions.temperature.toString());
-  
-  if (finalOptions.prompt) {
-    formData.append('prompt', finalOptions.prompt);
-  }
-  
-  if (finalOptions.responseFormat) {
-    formData.append('response_format', finalOptions.responseFormat);
-  }
-  
-  return formData;
 };
 
 /**

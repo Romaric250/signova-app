@@ -16,6 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StatusBar } from 'react-native';
 import { Audio } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 import { transcribeAudio } from '../../services/audio/audioToText';
 import { Button } from '../../components/atoms/Button';
 import { ProgressBar } from '../../components/molecules/ProgressBar';
@@ -41,6 +42,7 @@ const formatTime = (seconds: number): string => {
 };
 
 export const LiveCaptionsScreen: React.FC = () => {
+  const navigation = useNavigation();
   const [transcript, setTranscript] = useState('');
   const [noiseLevel, setNoiseLevel] = useState(65); // 0-100
   const [recording, setRecording] = useState<Audio.Recording | null>(null);
@@ -309,7 +311,13 @@ export const LiveCaptionsScreen: React.FC = () => {
       >
         {/* Header */}
         <View className="px-4 py-2 flex-row items-center justify-between" style={{ borderBottomWidth: 1, borderBottomColor: colors.surfaceLight }}>
-          <View className="w-10" />
+          {/* Back Button */}
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            className="w-10 h-10 items-center justify-center"
+          >
+            <Ionicons name="arrow-back" size={24} color={colors.text} />
+          </TouchableOpacity>
           <View className="flex-1">
             <Text style={{ color: colors.text }} className="text-lg font-bold text-center">
               Live Conversation

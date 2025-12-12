@@ -15,16 +15,16 @@ import { useAuthStore } from '../../store/authStore';
 
 // App color palette
 const colors = {
-  primary: '#38E078', // Bright green - buttons, accents, CTAs
-  primaryDark: '#2BC066', // Darker green for pressed states
-  background: '#122117', // Dark green - main background
-  surface: '#1A2E23', // Slightly lighter - cards, surfaces
-  surfaceLight: '#243D2E', // Even lighter - borders, dividers
-  text: '#FFFFFF', // White - primary text
-  textSecondary: '#A0B8A8', // Muted green-white - secondary text
-  textMuted: '#6B8B73', // More muted - timestamps, hints
-  danger: '#EF4444', // Red for errors/clear
-  warning: '#F59E0B', // Amber for streaks
+  primary: '#38E078',
+  primaryDark: '#2BC066',
+  background: '#122117',
+  surface: '#1A2E23',
+  surfaceLight: '#243D2E',
+  text: '#FFFFFF',
+  textSecondary: '#A0B8A8',
+  textMuted: '#6B8B73',
+  danger: '#EF4444',
+  warning: '#F59E0B',
 };
 
 export const HomeScreen: React.FC = () => {
@@ -43,7 +43,7 @@ export const HomeScreen: React.FC = () => {
       icon: 'mic',
       colors: [colors.primary, colors.primaryDark] as const,
       image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&q=80',
-      onPress: () => navigation.navigate('MainTabs', { screen: 'Translate' }),
+      onPress: () => navigation.navigate('LiveCaptions' as never),
     },
     {
       id: 'dictionary',
@@ -52,7 +52,7 @@ export const HomeScreen: React.FC = () => {
       icon: 'book',
       colors: [colors.primary, colors.primaryDark] as const,
       image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&q=80',
-      onPress: () => navigation.navigate('MainTabs', { screen: 'Dictionary' }),
+      onPress: () => navigation.navigate('Dictionary' as never),
     },
     {
       id: 'learn',
@@ -61,7 +61,7 @@ export const HomeScreen: React.FC = () => {
       icon: 'school',
       colors: [colors.primary, colors.primaryDark] as const,
       image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&q=80',
-      onPress: () => navigation.navigate('MainTabs', { screen: 'Learn' }),
+      onPress: () => navigation.navigate('Learn' as never),
     },
   ];
 
@@ -95,7 +95,7 @@ export const HomeScreen: React.FC = () => {
             <TouchableOpacity 
               className="w-10 h-10 rounded-full items-center justify-center"
               style={{ backgroundColor: colors.surface }}
-              onPress={() => navigation.navigate('MainTabs', { screen: 'Profile' })}
+              onPress={() => navigation.navigate('Profile' as never)}
             >
               <Ionicons name="person" size={18} color={colors.text} />
             </TouchableOpacity>
@@ -105,7 +105,7 @@ export const HomeScreen: React.FC = () => {
         {/* Hero Card - Live Translate */}
         <TouchableOpacity 
           className="mx-4 mt-3 rounded-2xl overflow-hidden"
-          onPress={() => navigation.navigate('MainTabs', { screen: 'Translate' })}
+          onPress={() => navigation.navigate('LiveCaptions' as never)}
           activeOpacity={0.9}
         >
           <ImageBackground
@@ -192,7 +192,7 @@ export const HomeScreen: React.FC = () => {
         <View className="px-4 mt-2">
           <View className="flex-row items-center justify-between mb-3">
             <Text style={{ color: colors.text }} className="text-base font-bold">Continue Learning</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('MainTabs', { screen: 'Learn' })}>
+            <TouchableOpacity onPress={() => navigation.navigate('Learn' as never)}>
               <Text style={{ color: colors.primary }} className="text-xs">See All</Text>
             </TouchableOpacity>
           </View>
@@ -200,7 +200,7 @@ export const HomeScreen: React.FC = () => {
           <TouchableOpacity 
             className="rounded-xl overflow-hidden"
             style={{ backgroundColor: colors.surface }}
-            onPress={() => navigation.navigate('MainTabs', { screen: 'Learn' })}
+            onPress={() => navigation.navigate('Learn' as never)}
             activeOpacity={0.8}
           >
             <View className="flex-row">
@@ -231,7 +231,7 @@ export const HomeScreen: React.FC = () => {
         </View>
 
         {/* Daily Tip */}
-        <View className="mx-4 mt-5 rounded-xl p-4 border" style={{ backgroundColor: `${colors.surface}`, borderColor: colors.surfaceLight }}>
+        <View className="mx-4 mt-5 rounded-xl p-4 border" style={{ backgroundColor: colors.surface, borderColor: colors.surfaceLight }}>
           <View className="flex-row items-start">
             <View className="w-8 h-8 rounded-lg items-center justify-center mr-3" style={{ backgroundColor: `${colors.primary}30` }}>
               <Ionicons name="bulb" size={16} color={colors.primary} />
@@ -249,7 +249,32 @@ export const HomeScreen: React.FC = () => {
         <View className="px-4 mt-5">
           <Text style={{ color: colors.text }} className="text-base font-bold mb-3">Recent Activity</Text>
           <View className="rounded-xl" style={{ backgroundColor: colors.surface }}>
-            {[
+            {/*
+              Uncomment and modify the following code to display dynamic recent activities
+              
+              recentActivities.map((activity, index) => (
+                <View 
+                  key={index} 
+                  className={`flex-row items-center p-3 ${index < recentActivities.length - 1 ? 'border-b' : ''}`}
+                  style={{ borderColor: colors.surfaceLight }}
+                >
+                  <View 
+                    className="w-8 h-8 rounded-full items-center justify-center mr-3"
+                    style={{ backgroundColor: `${activity.color}20` }}
+                  >
+                    <Ionicons name={activity.icon as any} size={14} color={activity.color} />
+                  </View>
+                  <View className="flex-1">
+                    <Text style={{ color: colors.text }} className="text-xs">{activity.text}</Text>
+                    <Text style={{ color: colors.textMuted }} className="text-[10px]">{activity.time}</Text>
+                  </View>
+                </View>
+              ))
+            */}
+            {/*
+              Static recent activities for demonstration
+            */}
+            { [
               { icon: 'checkmark-circle', color: colors.primary, text: 'Completed "Greetings" lesson', time: '2h ago' },
               { icon: 'mic', color: colors.primary, text: 'Used Live Translate for 5 min', time: '5h ago' },
               { icon: 'book', color: colors.warning, text: 'Learned 3 new signs', time: 'Yesterday' },

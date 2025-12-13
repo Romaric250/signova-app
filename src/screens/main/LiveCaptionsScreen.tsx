@@ -17,10 +17,13 @@ import { StatusBar } from 'react-native';
 import { Audio } from 'expo-av';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { transcribeAudio } from '../../services/audio/audioToText';
 import { Button } from '../../components/atoms/Button';
 import { ProgressBar } from '../../components/molecules/ProgressBar';
 import { useAudioToText } from '../../hooks/useAudioToText';
+
+const CONVERSATION_STORAGE_KEY = '@signova_conversation_history';
 
 // App color palette
 const colors = {
@@ -54,6 +57,7 @@ export const LiveCaptionsScreen: React.FC = () => {
     text: string;
     timestamp: Date;
   }>>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(true);
   const { transcribe, isLoading, error, result, reset } = useAudioToText();
   const recordingRef = useRef<Audio.Recording | null>(null);
   const timerIntervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -64,7 +68,48 @@ export const LiveCaptionsScreen: React.FC = () => {
   useEffect(() => {
     // Request permissions on mount
     Audio.requestPermissionsAsync().catch(console.error);
+    
+    // Load saved conversation history
+    loadConversationHistory();
   }, []);
+
+  // Load conversation history from AsyncStorage
+  const loadConversationHistory = async () => {
+    try {
+      const savedHistory = await AsyncStorage.getItem(CONVERSATION_STORAGE_KEY);
+      if (savedHistory) {
+        const parsed = JSON.parse(savedHistory);
+        // Convert timestamp strings back to Date objects
+        const historyWithDates = parsed.map((msg: any) => ({
+          ...msg,
+          timestamp: new Date(msg.timestamp),
+        }));
+        setConversationHistory(historyWithDates);
+        console.log('[LiveCaptions] Loaded conversation history:', historyWithDates.length, 'messages');
+      }
+    } catch (error) {
+      console.error('[LiveCaptions] Failed to load conversation history:', error);
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
+
+  // Save conversation history to AsyncStorage
+  const saveConversationHistory = async (history: typeof conversationHistory) => {
+    try {
+      await AsyncStorage.setItem(CONVERSATION_STORAGE_KEY, JSON.stringify(history));
+      console.log('[LiveCaptions] Saved conversation history:', history.length, 'messages');
+    } catch (error) {
+      console.error('[LiveCaptions] Failed to save conversation history:', error);
+    }
+  };
+
+  // Save whenever conversation history changes
+  useEffect(() => {
+    if (!isLoadingHistory && conversationHistory.length > 0) {
+      saveConversationHistory(conversationHistory);
+    }
+  }, [conversationHistory, isLoadingHistory]);
 
   useEffect(() => {
     // Update conversation history when transcription result is available
@@ -276,10 +321,30 @@ export const LiveCaptionsScreen: React.FC = () => {
     }
   };
 
-  const handleClear = () => {
-    setTranscript('');
-    setConversationHistory([]);
-    reset();
+  const handleClear = async () => {
+    Alert.alert(
+      'Clear Conversation',
+      'Are you sure you want to clear all messages? This cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Clear',
+          style: 'destructive',
+          onPress: async () => {
+            setTranscript('');
+            setConversationHistory([]);
+            reset();
+            // Clear from AsyncStorage
+            try {
+              await AsyncStorage.removeItem(CONVERSATION_STORAGE_KEY);
+              console.log('[LiveCaptions] Conversation history cleared');
+            } catch (error) {
+              console.error('[LiveCaptions] Failed to clear conversation history:', error);
+            }
+          },
+        },
+      ]
+    );
   };
 
   const handleSaveTranscript = () => {
@@ -413,7 +478,7 @@ export const LiveCaptionsScreen: React.FC = () => {
           )}
 
           {/* Empty state */}
-          {conversationHistory.length === 0 && !isLoading && (
+          {conversationHistory.length === 0 && !isLoading && !isLoadingHistory && (
             <View className="flex-1 items-center justify-center py-16">
               <Ionicons name="chatbubbles-outline" size={48} color={colors.textMuted} />
               <Text style={{ color: colors.textSecondary }} className="text-sm mt-3 text-center">
@@ -421,6 +486,16 @@ export const LiveCaptionsScreen: React.FC = () => {
               </Text>
               <Text style={{ color: colors.textMuted }} className="text-xs mt-1 text-center px-8">
                 Tap the microphone to speak, or type a message below
+              </Text>
+            </View>
+          )}
+
+          {/* Loading history */}
+          {isLoadingHistory && (
+            <View className="flex-1 items-center justify-center py-16">
+              <ActivityIndicator size="small" color={colors.primary} />
+              <Text style={{ color: colors.textMuted }} className="text-xs mt-2">
+                Loading conversation...
               </Text>
             </View>
           )}

@@ -12,6 +12,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuthStore } from '../../store/authStore';
+import { StatusBar } from 'react-native';
 
 // App color palette
 const colors = {
@@ -37,36 +38,36 @@ export const HomeScreen: React.FC = () => {
 
   const quickActions = [
     {
-      id: 'translate',
-      title: 'Live Translate',
-      subtitle: 'Real-time conversation',
+      id: 'live',
+      title: 'Live Captions',
+      subtitle: 'Real-time transcription',
       icon: 'mic',
-      colors: [colors.primary, colors.primaryDark] as const,
-      image: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=400&q=80',
+      colors: ['#2A4D3E', '#1E3A2F'] as const,
+      image: 'https://images.unsplash.com/photo-1589903308904-1010c2294adc?w=400&q=80',
       onPress: () => navigation.navigate('LiveCaptions' as never),
     },
     {
-      id: 'dictionary',
-      title: 'Sign Dictionary',
-      subtitle: 'Learn new signs',
-      icon: 'book',
-      colors: [colors.primary, colors.primaryDark] as const,
-      image: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=400&q=80',
-      onPress: () => navigation.navigate('Dictionary' as never),
+      id: 'speech-to-sign',
+      title: 'Speech to Sign',
+      subtitle: '3D Avatar Translation',
+      icon: 'body',
+      colors: ['#3D2A4D', '#2F1E3A'] as const,
+      image: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400&q=80',
+      onPress: () => navigation.navigate('SpeechToSign' as never),
     },
     {
       id: 'learn',
       title: 'Start Learning',
       subtitle: 'Interactive lessons',
       icon: 'school',
-      colors: [colors.primary, colors.primaryDark] as const,
+      colors: ['#2A3D4D', '#1E2F3A'] as const,
       image: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&q=80',
-      onPress: () => navigation.navigate('Learn' as never),
+      onPress: () => navigation.navigate('Learning' as never),
     },
   ];
 
   const featuredLesson = {
-    title: 'Basics of ASL',
+    title: 'Basics of Ghanian Sign Language',
     description: 'Learn the alphabet and common greetings',
     progress: 35,
     image: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=400&q=80',
@@ -80,6 +81,7 @@ export const HomeScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top']}>
+      <StatusBar barStyle="light-content" backgroundColor={colors.background} />
       <ScrollView 
         className="flex-1" 
         showsVerticalScrollIndicator={false}
@@ -192,7 +194,7 @@ export const HomeScreen: React.FC = () => {
         <View className="px-4 mt-2">
           <View className="flex-row items-center justify-between mb-3">
             <Text style={{ color: colors.text }} className="text-base font-bold">Continue Learning</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('Learn' as never)}>
+            <TouchableOpacity onPress={() => navigation.navigate('Learning' as never)}>
               <Text style={{ color: colors.primary }} className="text-xs">See All</Text>
             </TouchableOpacity>
           </View>
@@ -200,7 +202,7 @@ export const HomeScreen: React.FC = () => {
           <TouchableOpacity 
             className="rounded-xl overflow-hidden"
             style={{ backgroundColor: colors.surface }}
-            onPress={() => navigation.navigate('Learn' as never)}
+            onPress={() => navigation.navigate('Learning' as never)}
             activeOpacity={0.8}
           >
             <View className="flex-row">

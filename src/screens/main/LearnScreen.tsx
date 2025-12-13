@@ -6,10 +6,13 @@ import {
   TouchableOpacity,
   Image,
   Modal,
+  Dimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+
+const { width } = Dimensions.get('window');
 
 // App color palette
 const colors = {
@@ -111,7 +114,7 @@ const upcomingCourses = [
   },
 ];
 
-export const LearningScreen: React.FC = () => {
+export const LearnScreen: React.FC = () => {
   const [showDemo, setShowDemo] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
@@ -142,7 +145,7 @@ export const LearningScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }} edges={['top']}>
-      <ScrollView className="flex-1" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 100 }}>
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         {/* Header */}
         <View className="px-4 pt-4 pb-2">
           <Text style={{ color: colors.text }} className="text-xl font-bold">
@@ -206,7 +209,7 @@ export const LearningScreen: React.FC = () => {
             onPress={() => setShowDemo(true)}
             activeOpacity={0.8}
           >
-            <View className="h-32 justify-center items-center" style={{ backgroundColor: colors.surfaceLight }}>
+            <View className="h-32 bg-gradient-to-r justify-center items-center" style={{ backgroundColor: colors.surfaceLight }}>
               <View className="w-16 h-16 rounded-full items-center justify-center" style={{ backgroundColor: `${colors.primary}30` }}>
                 <Ionicons name="play" size={32} color={colors.primary} />
               </View>
@@ -248,7 +251,7 @@ export const LearningScreen: React.FC = () => {
         </View>
 
         {/* Upcoming Courses */}
-        <View className="px-4 mt-6">
+        <View className="px-4 mt-6 mb-8">
           <Text style={{ color: colors.text }} className="text-base font-bold mb-3">
             Upcoming Courses
           </Text>
@@ -285,7 +288,7 @@ export const LearningScreen: React.FC = () => {
         </View>
 
         {/* Notify Me */}
-        <View className="mx-4 mt-4 mb-8 p-4 rounded-xl border" style={{ backgroundColor: colors.surface, borderColor: colors.surfaceLight }}>
+        <View className="mx-4 mb-8 p-4 rounded-xl border" style={{ backgroundColor: colors.surface, borderColor: colors.surfaceLight }}>
           <View className="flex-row items-center">
             <Ionicons name="notifications" size={20} color={colors.primary} />
             <Text style={{ color: colors.text }} className="text-sm font-bold ml-2">
@@ -405,7 +408,7 @@ export const LearningScreen: React.FC = () => {
                     className="mx-1"
                   >
                     <View 
-                      className="w-2.5 h-2.5 rounded-full"
+                      className={`w-2.5 h-2.5 rounded-full`}
                       style={{ 
                         backgroundColor: index === currentStep 
                           ? colors.primary 
@@ -467,4 +470,3 @@ export const LearningScreen: React.FC = () => {
     </SafeAreaView>
   );
 };
-

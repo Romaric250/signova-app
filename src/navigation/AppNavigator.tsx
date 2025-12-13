@@ -5,12 +5,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as SplashScreen from 'expo-splash-screen';
 import { RootStackParamList } from './types';
 import { AuthNavigator } from './AuthNavigator';
-import { MainNavigator } from './MainNavigator';
+import { MainStack } from './MainStack';
 import { TranslateNavigator } from './TranslateNavigator';
 import { RealTimeModeSelectionScreen } from '../screens/main/RealTimeModeSelectionScreen';
 import { TranslateScreen } from '../screens/main/TranslateScreen';
 import { LiveCaptionsScreen } from '../screens/main/LiveCaptionsScreen';
 import { SignRecordingScreen } from '../screens/main/SignRecordingScreen';
+import { SpeechToSignScreen } from '../screens/main/SpeechToSignScreen';
 import { useAuthStore } from '../store/authStore';
 import { useSessionRestore } from '../hooks/useSessionRestore';
 
@@ -62,7 +63,7 @@ export const AppNavigator: React.FC = () => {
           <Stack.Screen name="Auth" component={AuthNavigator} />
         ) : (
           <>
-            <Stack.Screen name="Main" component={MainNavigator} />
+            <Stack.Screen name="Main" component={MainStack} />
             <Stack.Screen
               name="RealTimeModeSelection"
               component={RealTimeModeSelectionScreen}
@@ -70,6 +71,7 @@ export const AppNavigator: React.FC = () => {
             <Stack.Screen name="TextToSign" component={TranslateScreen} />
             <Stack.Screen name="LiveCaptions" component={LiveCaptionsScreen} />
             <Stack.Screen name="SignRecording" component={SignRecordingScreen} />
+            <Stack.Screen name="SpeechToSign" component={SpeechToSignScreen} />
           </>
         )}
       </Stack.Navigator>

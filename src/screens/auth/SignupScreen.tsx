@@ -1,150 +1,325 @@
 import React, { useState } from 'react';
-import { View, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  ActivityIndicator,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useForm } from 'react-hook-form';
-import { Button } from '../../components/atoms/Button';
-import { FormInput } from '../../components/molecules/FormInput';
-import { Text } from '../../components/atoms/Text';
-import { useAuth } from '../../hooks/useAuth.ts';
-import { AuthStackParamList } from '../../types/navigation.types.ts';
-import { SignupData } from '../../types/auth.types.ts';
-import { validateEmail } from '../../utils/validation.ts';
+import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../../hooks/useAuth';
 
-type NavigationProp = NativeStackNavigationProp<AuthStackParamList>;
+// App color palette
+const colors = {
+  primary: '#38E078',
+  primaryDark: '#2BC066',
+  background: '#122117',
+  surface: '#1A2E23',
+  surfaceLight: '#243D2E',
+  text: '#FFFFFF',
+  textSecondary: '#A0B8A8',
+  textMuted: '#6B8B73',
+  danger: '#EF4444',
+};
 
-export const SignupScreen: React.FC = () => {
-  const navigation = useNavigation<NavigationProp>();
+export const SignUpScreen: React.FC = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const { signup, isLoading } = useAuth();
-  const { control, handleSubmit, watch, formState: { errors } } = useForm<SignupData>();
-  const [signupError, setSignupError] = useState<string | null>(null);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string; confirmPassword?: string }>({});
 
-  const password = watch('password');
+  const validateForm = () => {
+    const newErrors: { name?: string; email?: string; password?: string; confirmPassword?: string } = {};
+    
+    if (!name.trim()) {
+      newErrors.name = 'Name is required';
+    }
+    
+    if (!email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(email)) {
+      newErrors.email = 'Please enter a valid email';
+    }
+    
+    if (!password) {
+      newErrors.password = 'Password is required';
+    } else if (password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    }
+    
+    if (!confirmPassword) {
+      newErrors.confirmPassword = 'Please confirm your password';
+    } else if (password !== confirmPassword) {
+      newErrors.confirmPassword = 'Passwords do not match';
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-  const handleSignup = async (data: SignupData) => {
-    setSignupError(null); // Clear previous errors
-    const result = await signup(data);
-    if (result.success) {
-      // Navigation will happen automatically via AppNavigator when isAuthenticated becomes true
-      // But we can also navigate to sign language selection if needed
-      navigation.navigate('SignLanguageSelection');
-    } else {
-      // Set error message to display
-      setSignupError(result.error || 'Signup failed. Please try again.');
+  const handleSignUp = async () => {
+    if (!validateForm()) return;
+    
+    try {
+      await signup({ name, email, password, confirmPassword });
+    } catch (error: any) {
+      Alert.alert('Sign Up Failed', error.message || 'Please try again.');
     }
   };
 
   return (
-    <SafeAreaView className="flex-1 bg-white">
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         className="flex-1"
       >
-        <ScrollView
-          className="flex-1"
-          contentContainerClassName="flex-grow px-6 py-8"
+        <ScrollView 
+          className="flex-1" 
+          contentContainerStyle={{ flexGrow: 1, padding: 24 }}
           keyboardShouldPersistTaps="handled"
         >
-          <View className="mb-8">
-            <Text variant="h1" className="text-gray-900 mb-2">
+          {/* Back Button */}
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()}
+            className="w-10 h-10 rounded-xl items-center justify-center mb-4"
+            style={{ backgroundColor: colors.surface }}
+          >
+            <Ionicons name="arrow-back" size={20} color={colors.text} />
+          </TouchableOpacity>
+
+          {/* Header */}
+          <View className="mb-6">
+            <Text style={{ color: colors.text }} className="text-2xl font-bold">
               Create Account
             </Text>
-            <Text variant="body" className="text-gray-600">
-              Join SignNova and start learning
+            <Text style={{ color: colors.textSecondary }} className="text-sm mt-1">
+              Start your sign language journey today
             </Text>
           </View>
 
-          <View className="mb-6">
-            <FormInput
-              name="name"
-              control={control}
-              label="Full Name"
-              placeholder="Enter your full name"
-              rules={{
-                required: 'Name is required',
-                minLength: {
-                  value: 2,
-                  message: 'Name must be at least 2 characters',
-                },
+          {/* Name Input */}
+          <View className="mb-4">
+            <Text style={{ color: colors.textSecondary }} className="text-sm mb-2 ml-1">
+              Full Name
+            </Text>
+            <View 
+              className="rounded-xl px-4 py-3 flex-row items-center"
+              style={{ 
+                backgroundColor: colors.surface,
+                borderWidth: errors.name ? 1 : 0,
+                borderColor: colors.danger,
               }}
-            />
+            >
+              <Ionicons name="person-outline" size={20} color={colors.textMuted} />
+              <TextInput
+                value={name}
+                onChangeText={(text) => {
+                  setName(text);
+                  if (errors.name) setErrors({ ...errors, name: undefined });
+                }}
+                placeholder="Enter your full name"
+                placeholderTextColor={colors.textMuted}
+                style={{ color: colors.text }}
+                className="flex-1 ml-3 text-sm"
+                autoCapitalize="words"
+              />
+            </View>
+            {errors.name && (
+              <Text style={{ color: colors.danger }} className="text-xs mt-1 ml-1">
+                {errors.name}
+              </Text>
+            )}
+          </View>
 
-            <View className="mt-4">
-              <FormInput
-                name="email"
-                control={control}
-                label="Email"
+          {/* Email Input */}
+          <View className="mb-4">
+            <Text style={{ color: colors.textSecondary }} className="text-sm mb-2 ml-1">
+              Email
+            </Text>
+            <View 
+              className="rounded-xl px-4 py-3 flex-row items-center"
+              style={{ 
+                backgroundColor: colors.surface,
+                borderWidth: errors.email ? 1 : 0,
+                borderColor: colors.danger,
+              }}
+            >
+              <Ionicons name="mail-outline" size={20} color={colors.textMuted} />
+              <TextInput
+                value={email}
+                onChangeText={(text) => {
+                  setEmail(text);
+                  if (errors.email) setErrors({ ...errors, email: undefined });
+                }}
                 placeholder="Enter your email"
+                placeholderTextColor={colors.textMuted}
+                style={{ color: colors.text }}
+                className="flex-1 ml-3 text-sm"
                 keyboardType="email-address"
                 autoCapitalize="none"
-                rules={{
-                  required: 'Email is required',
-                  validate: (value) => validateEmail(value) || 'Invalid email format',
-                }}
+                autoCorrect={false}
               />
             </View>
-
-            <View className="mt-4">
-              <FormInput
-                name="password"
-                control={control}
-                label="Password"
-                placeholder="Create a password"
-                secureTextEntry
-                rules={{
-                  required: 'Password is required',
-                  minLength: {
-                    value: 8,
-                    message: 'Password must be at least 8 characters',
-                  },
-                }}
-              />
-            </View>
-
-            <View className="mt-4">
-              <FormInput
-                name="confirmPassword"
-                control={control}
-                label="Confirm Password"
-                placeholder="Confirm your password"
-                secureTextEntry
-                rules={{
-                  required: 'Please confirm your password',
-                  validate: (value) =>
-                    value === password || 'Passwords do not match',
-                }}
-              />
-            </View>
+            {errors.email && (
+              <Text style={{ color: colors.danger }} className="text-xs mt-1 ml-1">
+                {errors.email}
+              </Text>
+            )}
           </View>
 
-          {signupError && (
-            <View className="mb-4 p-4 bg-red-50 rounded-lg border border-red-200">
-              <Text variant="body" className="text-red-600 text-center">
-                {signupError}
-              </Text>
+          {/* Password Input */}
+          <View className="mb-4">
+            <Text style={{ color: colors.textSecondary }} className="text-sm mb-2 ml-1">
+              Password
+            </Text>
+            <View 
+              className="rounded-xl px-4 py-3 flex-row items-center"
+              style={{ 
+                backgroundColor: colors.surface,
+                borderWidth: errors.password ? 1 : 0,
+                borderColor: colors.danger,
+              }}
+            >
+              <Ionicons name="lock-closed-outline" size={20} color={colors.textMuted} />
+              <TextInput
+                value={password}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  if (errors.password) setErrors({ ...errors, password: undefined });
+                }}
+                placeholder="Create a password"
+                placeholderTextColor={colors.textMuted}
+                style={{ color: colors.text }}
+                className="flex-1 ml-3 text-sm"
+                secureTextEntry={!showPassword}
+              />
+              <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+                <Ionicons 
+                  name={showPassword ? 'eye-off-outline' : 'eye-outline'} 
+                  size={20} 
+                  color={colors.textMuted} 
+                />
+              </TouchableOpacity>
             </View>
-          )}
+            {errors.password && (
+              <Text style={{ color: colors.danger }} className="text-xs mt-1 ml-1">
+                {errors.password}
+              </Text>
+            )}
+          </View>
 
-          <Button
-            title="Sign Up"
-            onPress={handleSubmit(handleSignup)}
-            variant="primary"
-            loading={isLoading}
-            className="mb-4"
-            fullWidth
-          />
+          {/* Confirm Password Input */}
+          <View className="mb-6">
+            <Text style={{ color: colors.textSecondary }} className="text-sm mb-2 ml-1">
+              Confirm Password
+            </Text>
+            <View 
+              className="rounded-xl px-4 py-3 flex-row items-center"
+              style={{ 
+                backgroundColor: colors.surface,
+                borderWidth: errors.confirmPassword ? 1 : 0,
+                borderColor: colors.danger,
+              }}
+            >
+              <Ionicons name="lock-closed-outline" size={20} color={colors.textMuted} />
+              <TextInput
+                value={confirmPassword}
+                onChangeText={(text) => {
+                  setConfirmPassword(text);
+                  if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: undefined });
+                }}
+                placeholder="Confirm your password"
+                placeholderTextColor={colors.textMuted}
+                style={{ color: colors.text }}
+                className="flex-1 ml-3 text-sm"
+                secureTextEntry={!showConfirmPassword}
+              />
+              <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)}>
+                <Ionicons 
+                  name={showConfirmPassword ? 'eye-off-outline' : 'eye-outline'} 
+                  size={20} 
+                  color={colors.textMuted} 
+                />
+              </TouchableOpacity>
+            </View>
+            {errors.confirmPassword && (
+              <Text style={{ color: colors.danger }} className="text-xs mt-1 ml-1">
+                {errors.confirmPassword}
+              </Text>
+            )}
+          </View>
 
-          <View className="flex-row justify-center items-center">
-            <Text variant="body" className="text-gray-600">
+          {/* Sign Up Button */}
+          <TouchableOpacity
+            onPress={handleSignUp}
+            disabled={isLoading}
+            className="py-4 rounded-xl items-center mb-4"
+            style={{ backgroundColor: isLoading ? colors.surfaceLight : colors.primary }}
+          >
+            {isLoading ? (
+              <ActivityIndicator color={colors.background} />
+            ) : (
+              <Text style={{ color: colors.background }} className="text-base font-semibold">
+                Create Account
+              </Text>
+            )}
+          </TouchableOpacity>
+
+          {/* Terms */}
+          <Text style={{ color: colors.textMuted }} className="text-xs text-center mb-6">
+            By signing up, you agree to our{' '}
+            <Text style={{ color: colors.primary }}>Terms of Service</Text>
+            {' '}and{' '}
+            <Text style={{ color: colors.primary }}>Privacy Policy</Text>
+          </Text>
+
+          {/* Divider */}
+          <View className="flex-row items-center my-4">
+            <View className="flex-1 h-px" style={{ backgroundColor: colors.surfaceLight }} />
+            <Text style={{ color: colors.textMuted }} className="mx-4 text-xs">
+              OR
+            </Text>
+            <View className="flex-1 h-px" style={{ backgroundColor: colors.surfaceLight }} />
+          </View>
+
+          {/* Social Sign Up */}
+          <View className="flex-row justify-center space-x-4">
+            <TouchableOpacity 
+              className="w-12 h-12 rounded-xl items-center justify-center"
+              style={{ backgroundColor: colors.surface }}
+            >
+              <Ionicons name="logo-google" size={24} color={colors.text} />
+            </TouchableOpacity>
+            <TouchableOpacity 
+              className="w-12 h-12 rounded-xl items-center justify-center ml-4"
+              style={{ backgroundColor: colors.surface }}
+            >
+              <Ionicons name="logo-apple" size={24} color={colors.text} />
+            </TouchableOpacity>
+          </View>
+
+          {/* Sign In Link */}
+          <View className="flex-row justify-center mt-8">
+            <Text style={{ color: colors.textSecondary }} className="text-sm">
               Already have an account?{' '}
             </Text>
-            <Button
-              title="Sign In"
-              onPress={() => navigation.navigate('Login')}
-              variant="ghost"
-              className="p-0"
-            />
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Text style={{ color: colors.primary }} className="text-sm font-semibold">
+                Sign In
+              </Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

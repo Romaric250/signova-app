@@ -29,11 +29,11 @@ export const MainNavigator: React.FC = () => {
         tabBarStyle: {
           backgroundColor: colors.background,
           borderTopColor: colors.surfaceLight,
-          borderTopWidth: 0,
+          borderTopWidth: 1,
           elevation: 0,
-          height: 60,
-          paddingBottom: 12,
-          paddingTop: 12,
+          height: 65,
+          paddingBottom: 10,
+          paddingTop: 8,
         },
         tabBarLabelStyle: {
           fontSize: 12,
